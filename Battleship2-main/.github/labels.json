@@ -1,9 +1,9 @@
 [
-  { "name": "priority: BACKLOG", "color": "D1D5DB", "description": "CAUSE: Valid idea with no timeline ACTION: Revisit later" },
   { "name": "priority: CRITICAL", "color": "B91C1C", "description": "CAUSE: Production down, security issue ACTION: Fix immediately" },
   { "name": "priority: HIGH", "color": "FDE047", "description": "CAUSE: Major functionality broken ACTION: Address ASAP" },
   { "name": "priority: MEDIUM", "color": "FEF9C3", "description": "CAUSE: Standard bugs/improvements ACTION: Normal flow" },
   { "name": "priority: LOW", "color": "1D4ED8", "description": "CAUSE: Minor issues, UI polish ACTION: When time allows" },
+  { "name": "priority: REVISIT", "color": "D1D5DB", "description": "CAUSE: Valid idea with no timeline ACTION: Revisit later" },
   { "name": "status: DUPLICATE", "color": "D1D5DB", "description": "This issue or pull request already exists" },
   { "name": "status: INVALID", "color": "FDE047", "description": "This doesn't seem right" },
   { "name": "status: NEEDS INFO", "color": "3730A3", "description": "Further details are required before work can begin" },
