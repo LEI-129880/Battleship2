@@ -19,6 +19,42 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardWindowTest {
     @Test
+    void consoleAndButtonsUseTheSameFleetAndShots() throws Exception {
+        Assumptions.assumeFalse(GraphicsEnvironment.isHeadless());
+        SwingUtilities.invokeAndWait(() -> {
+            BoardWindow window = new BoardWindow();
+            try {
+                List<JButton> buttons = descendants(window.getContentPane()).stream()
+                        .filter(JButton.class::isInstance).map(JButton.class::cast).toList();
+                List<JButton> own = buttons.stream().filter(b -> b.getName() != null
+                        && b.getName().startsWith("own-")).toList();
+                own.get(0).doClick();
+                assertEquals(1, window.consoleGame().getMyFleet().getShips().size());
+                assertEquals(5, own.stream().filter(b -> b.getToolTipText().endsWith(": Navio")).count(),
+                        "One click must place all five cells of the galleon");
+                own.get(99).doClick();
+                assertEquals(5, own.stream().filter(b -> b.getToolTipText().endsWith(": Navio")).count(),
+                        "An invalid placement must not add a partial ship");
+                IFleet fleet = Fleet.createRandom();
+                window.consoleFleet(fleet);
+                assertSame(fleet, window.consoleGame().getMyFleet());
+                assertEquals(25, own.stream().filter(b -> b.getToolTipText().endsWith(": Navio")).count());
+                window.consoleShots(Tasks.parseShots("A1 B2 C3"));
+                assertEquals(1, window.consoleGame().getAlienMoves().size());
+                for (int index : new int[] {0, 11, 22})
+                    assertFalse(own.get(index).getToolTipText().endsWith(": Água")
+                            || own.get(index).getToolTipText().endsWith(": Navio"));
+                window.consoleFleet(Fleet.createRandom());
+                assertTrue(window.consoleGame().getAlienMoves().isEmpty());
+                button(buttons, "Desfazer").doClick();
+                assertEquals(10, window.consoleGame().getMyFleet().getShips().size());
+                button(buttons, "Nova partida").doClick();
+                assertTrue(window.consoleGame().getMyFleet().getShips().isEmpty());
+            } finally { window.dispose(); }
+        });
+    }
+
+    @Test
     void opponentRespondsAndUnlocksTheNextTurn() throws Exception {
         Assumptions.assumeFalse(GraphicsEnvironment.isHeadless());
         java.util.concurrent.CompletableFuture<Void> finished = new java.util.concurrent.CompletableFuture<>();

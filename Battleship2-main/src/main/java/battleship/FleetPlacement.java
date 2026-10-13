@@ -57,4 +57,6 @@ final class FleetPlacement {
     }
 
     void randomize() { fleet = Fleet.createRandom(); }
+
+    void load(IFleet fleet) { this.fleet = fleet; }
 }

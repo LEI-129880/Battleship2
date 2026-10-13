@@ -22,7 +22,8 @@ public final class MoveClock {
     private JLabel display;
     private JLabel heading;
     private Timer refresh;
-    private int move = 1;
+    private volatile int move = 1;
+    private volatile boolean closed;
 
     public MoveClock() {
         if (!GraphicsEnvironment.isHeadless()) {
@@ -31,6 +32,7 @@ public final class MoveClock {
     }
 
     private void createWindow() {
+        if (closed) return;
         frame = new JFrame("Battleship | Relógio");
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setSize(310, 175);
@@ -75,12 +77,13 @@ public final class MoveClock {
 
     /** Inicia um jogo novo ou uma jogada seguinte, com o tempo a zero. */
     public synchronized void start(int number) {
+        if (closed) return;
         move = number;
         watch.reset();
         watch.start();
 
         SwingUtilities.invokeLater(() -> {
-            if (frame != null) {
+            if (!closed && frame != null) {
                 frame.setVisible(true);
                 updateDisplay();
             }
@@ -98,7 +101,9 @@ public final class MoveClock {
         return result;
     }
 
-    public void close() {
+    public synchronized void close() {
+        closed = true;
+        if (watch.isStarted() && !watch.isStopped()) watch.stop();
         SwingUtilities.invokeLater(() -> {
             if (refresh != null) refresh.stop();
             if (frame != null) frame.dispose();

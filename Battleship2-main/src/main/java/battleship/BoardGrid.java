@@ -155,10 +155,16 @@ final class BoardGrid extends JPanel {
                 default -> SEA;
             };
             if (selected) color = new Color(235, 200, 105);
-            if (preview != 0) color = preview > 0 ? new Color(149, 185, 161) : new Color(230, 159, 150);
+            if (preview > 0) color = new Color(149, 185, 161);
             else if (isEnabled() && getModel().isRollover() && !selected) color = color.brighter();
             g.setColor(color);
             g.fillRect(0, 0, getWidth(), getHeight());
+            if (preview != 0) {
+                g.setColor(preview > 0 ? new Color(42, 115, 65) : new Color(190, 45, 45));
+                g.setStroke(new BasicStroke(2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                        10f, new float[] {4f, 3f}, 0f));
+                g.drawRect(2, 2, getWidth() - 5, getHeight() - 5);
+            }
             int size = Math.min(getWidth(), getHeight());
             int cx = getWidth() / 2, cy = getHeight() / 2;
             g.setColor(new Color(29, 44, 54));

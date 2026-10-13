@@ -30,6 +30,7 @@ public class Tasks {
 	private static final String RAJADA = "rajada";
 	private static final String TIROS = "tiros";
 	private static final String MAPA = "mapa";
+	private static final String TABULEIRO = "tabuleiro";
 	private static final String STATUS = "estado";
 	private static final String SIMULA = "simula";
 
@@ -37,99 +38,106 @@ public class Tasks {
 	 * This task also tests the fighting element of a round of three shots
 	 */
 	public static void menu() {
-
-		IFleet myFleet = null;
-		IGame game = null;
-		MoveClock clock = new MoveClock();
-		int moveNumber = 1;
-		menuHelp();
-
-		System.out.print("> ");
-		Scanner in = new Scanner(System.in);
-		String command = in.next();
-		while (!command.equals(DESISTIR)) {
-
-			switch (command) {
-				case GERAFROTA:
-					myFleet = Fleet.createRandom();
-					game = new Game(myFleet);
-					game.printMyBoard(false, true);
-					moveNumber = 1;
-					clock.start(moveNumber);
-					break;
-				case LEFROTA:
-					myFleet = buildFleet(in);
-					game = new Game(myFleet);
-					game.printMyBoard(false, true);
-					moveNumber = 1;
-					clock.start(moveNumber);
-					break;
-				case STATUS:
-					if (myFleet != null)
-						myFleet.printStatus();
-					break;
-				case MAPA:
-					if (myFleet != null)
-						game.printMyBoard(false, true);
-					break;
-
-				case RAJADA:
-					if (game != null) {
-						game.readEnemyFire(in);
-
-						String elapsed = clock.stop();
-
-						System.out.println("Tempo da jogada "
-								+ moveNumber + ": " + elapsed);
-
-						myFleet.printStatus();
-						game.printMyBoard(true, false);
-
-						if (game.getRemainingShips() == 0) {
-							game.over();
-							clock.close();
-							System.exit(0);
-						}
-
-						clock.start(++moveNumber);
-					}
-					break;
-
-				case SIMULA:
-					if (game != null) {
-						while (game.getRemainingShips() > 0){
-							game.randomEnemyFire();
-							myFleet.printStatus();
-							game.printMyBoard(true, false);
-							try {
-								Thread.sleep(3000);
-							} catch (InterruptedException e) {
-								Thread.currentThread().interrupt(); // Best practice: restore interrupt status
-							}
-						}
-
-						if (game.getRemainingShips() == 0) {
-							game.over();
-							System.exit(0);
-						}
-					}
-					break;
-				case TIROS:
-					if (game != null)
-						game.printMyBoard(true, true);
-					break;
-                case AJUDA:
-                    menuHelp();
+        BoardWindow[] window = new BoardWindow[1];
+        onBoard(() -> {
+            com.formdev.flatlaf.FlatLightLaf.setup();
+            window[0] = new BoardWindow();
+            window[0].setDefaultCloseOperation(javax.swing.JFrame.HIDE_ON_CLOSE);
+        });
+        Scanner in = new Scanner(System.in);
+        menuHelp();
+        try {
+            while (true) {
+                System.out.print("> ");
+                if (!in.hasNext()) break;
+                String command = in.next().toLowerCase(java.util.Locale.ROOT);
+                if (command.equals(DESISTIR)) break;
+                try {
+                    switch (command) {
+                        case GERAFROTA -> {
+                            IFleet fleet = Fleet.createRandom();
+                            onBoard(() -> {
+                                window[0].consoleFleet(fleet);
+                                window[0].consoleGame().printMyBoard(false, true);
+                            });
+                        }
+                        case LEFROTA -> {
+                            IFleet fleet = buildFleet(in);
+                            onBoard(() -> window[0].consoleFleet(fleet));
+                        }
+                        case TABULEIRO -> onBoard(() -> {
+                            window[0].setVisible(true);
+                            window[0].toFront();
+                        });
+                        case MAPA -> onBoard(() -> window[0].consoleGame().printMyBoard(false, true));
+                        case STATUS -> onBoard(() -> window[0].consoleGame().getMyFleet().printStatus());
+                        case TIROS -> onBoard(() -> window[0].consoleGame().printMyBoard(true, true));
+                        case RAJADA -> {
+                            String input = in.nextLine().trim();
+                            if (input.isEmpty()) {
+                                System.out.println("Indica três posições, por exemplo: A1 B2 C3");
+                                if (!in.hasNextLine()) break;
+                                input = in.nextLine();
+                            }
+                            java.util.List<IPosition> shots = parseShots(input);
+                            onBoard(() -> {
+                                window[0].consoleShots(shots);
+                                window[0].consoleGame().printMyBoard(true, true);
+                            });
+                        }
+                        case SIMULA -> {
+                            while (true) {
+                                boolean[] next = {false};
+                                onBoard(() -> {
+                                    if (window[0].consoleGame().getMyFleet().getShips().size() != IFleet.FLEET_SIZE)
+                                        throw new IllegalStateException("Gera ou coloca primeiro os 11 navios.");
+                                    next[0] = window[0].consoleGame().getRemainingShips() > 0;
+                                    if (next[0]) {
+                                        window[0].consoleRandomShots();
+                                        window[0].consoleGame().printMyBoard(true, false);
+                                    }
+                                });
+                                if (!next[0]) break;
+                                Thread.sleep(3000);
+                            }
+                        }
+                        case AJUDA -> menuHelp();
+                        default -> System.out.println("Comando desconhecido. Escreve ajuda.");
+                    }
+                } catch (IllegalArgumentException | IllegalStateException error) {
+                    System.out.println(error.getMessage());
+                } catch (InterruptedException error) {
+                    Thread.currentThread().interrupt();
                     break;
-				default:
-					System.out.println("Que comando é esse??? Repete ...");
-			}
-			System.out.print("> ");
-			command = in.next();
-		}
-		clock.close();
-		System.out.println(GOODBYE_MESSAGE);
-	}
+                }
+            }
+        } finally {
+            onBoard(() -> window[0].dispose());
+        }
+        System.out.println(GOODBYE_MESSAGE);
+    }
+
+    static java.util.List<IPosition> parseShots(String input) {
+        java.util.List<IPosition> shots = new java.util.ArrayList<>();
+        try (Scanner tokens = new Scanner(input)) {
+            while (tokens.hasNext()) shots.add(readClassicPosition(tokens));
+        }
+        if (shots.size() != Game.NUMBER_SHOTS || shots.stream().anyMatch(p -> !p.isInside()))
+            throw new IllegalArgumentException("Indica três posições entre A1 e J10, por exemplo: rajada A1 B2 C3.");
+        return shots;
+    }
+
+    private static void onBoard(Runnable action) {
+        try {
+            javax.swing.SwingUtilities.invokeAndWait(action);
+        } catch (java.lang.reflect.InvocationTargetException error) {
+            if (error.getCause() instanceof RuntimeException cause) throw cause;
+            throw new IllegalStateException(error.getCause());
+        } catch (InterruptedException error) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Operação interrompida.", error);
+        }
+    }
 
 	/**
 	 * This function provides help information about the menu commands.
@@ -141,7 +149,8 @@ public class Tasks {
 		System.out.println("- " + LEFROTA + ": Permite criar e carregar uma frota personalizada.");
 		System.out.println("- " + STATUS + ": Mostra o status atual da frota.)");
 		System.out.println("- " + MAPA + ": Exibe o mapa da frota.");
-		System.out.println("- " + RAJADA + ": Realiza uma rajada de disparos.");
+		System.out.println("- " + TABULEIRO + ": Abre a janela da mesma partida, com os dois tabuleiros.");
+		System.out.println("- " + RAJADA + ": Regista tiros recebidos na tua frota: rajada A1 B2 C3.");
 		System.out.println("- " + SIMULA + ": Simula um jogo completo.");
 		System.out.println("- " + TIROS + ": Lista os tiros válidos realizados (* = tiro em navio, o = tiro na água)");
 		System.out.println("- " + DESISTIR + ": Encerra o jogo.");

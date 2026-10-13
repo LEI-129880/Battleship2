@@ -155,12 +155,21 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Contribuição do aluno 129890, com `com.formdev:flatlaf:3.7.2`.
 
-Execute `battleship.BoardWindow` no IntelliJ. A janela apresenta dois tabuleiros:
-a tua frota à esquerda e a frota inimiga à direita.
+Execute `battleship.Main` no IntelliJ e escreva `tabuleiro` na consola. A janela
+apresenta a tua frota à esquerda e a frota inimiga à direita, partilhando a mesma
+partida com a consola. Repetir `tabuleiro` volta a mostrar a mesma janela.
+`gerafrota` e `lefrota` atualizam a frota na janela; `mapa`, `estado` e `tiros`
+consultam essa mesma frota, incluindo os navios colocados com o rato.
+`rajada A1 B2 C3` mantém o significado original: regista tiros **recebidos** na tua
+frota. Para atacar o inimigo, selecione posições na grelha da direita.
+`simula` mostra os tiros automáticos na tua frota. `desisto` fecha a sessão.
+Também é possível executar `battleship.BoardWindow` diretamente, sem consola.
 
-1. Escolha o tipo de navio e clique no tabuleiro esquerdo para o colocar.
+1. Escolha o tipo de navio e clique uma vez no tabuleiro esquerdo para colocar
+   o navio inteiro. O número entre parênteses indica o tamanho; × indica quantos faltam.
    **Rodar** muda a orientação; a pré-visualização indica se a posição é válida.
    **Desfazer** retira o último navio. **Gerar frota** permite colocação automática.
+   Uma posição inválida não coloca partes do navio nem apaga os já colocados.
 2. Coloque os 11 navios: 4 barcas, 3 caravelas, 2 naus, 1 fragata e 1 galeão em T.
    Mantêm-se as regras do motor original: os navios não se podem tocar.
 3. Clique em **Começar partida**. A frota inimiga fica escondida.
@@ -177,6 +186,9 @@ se restarem menos de três posições, o adaptador repete a última posição ap
 para respeitar o formato de três tiros exigido pelo motor original.
 O adversário gráfico é local e aleatório, não é o LLM das partes C e D da ficha.
 O modo de consola continua disponível através de `battleship.Main`.
+O mesmo relógio mede as jogadas da consola e da janela: começa com a frota pronta,
+regista o tempo ao disparar e reinicia para a jogada seguinte. Uma nova frota
+reinicia a contagem; desfazer a colocação ou iniciar uma nova partida fecha o relógio.
 
 Execute `mvn test` para correr os testes. O teste Swing é omitido em ambientes
 sem interface gráfica; os testes de colocação, turnos e estados continuam a executar.

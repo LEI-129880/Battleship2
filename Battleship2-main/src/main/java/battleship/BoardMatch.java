@@ -38,6 +38,24 @@ final class BoardMatch {
         phase = Phase.PLAYER;
     }
 
+    void loadFleet(IFleet fleet) {
+        require(Phase.PLACEMENT);
+        placement.load(fleet);
+        player = new Game(fleet);
+    }
+
+    /** Console rajada keeps its original meaning: shots received by our fleet. */
+    void receiveShots(List<IPosition> shots) {
+        if (!placement.complete()) throw new IllegalStateException("Gera ou coloca primeiro os 11 navios.");
+        if (phase == Phase.WON || phase == Phase.LOST)
+            throw new IllegalStateException("A partida terminou. Gera uma nova frota.");
+        if (shots.size() != Game.NUMBER_SHOTS || shots.stream().anyMatch(p -> !p.isInside()))
+            throw new IllegalArgumentException("Indica três posições entre A1 e J10.");
+        if (phase == Phase.PLACEMENT) start();
+        player.fireShots(shots);
+        phase = player.getRemainingShips() == 0 ? Phase.LOST : Phase.PLAYER;
+    }
+
     int shotsRequired() { return Math.min(Game.NUMBER_SHOTS, available(enemy).size()); }
 
     void attack(List<IPosition> shots) {

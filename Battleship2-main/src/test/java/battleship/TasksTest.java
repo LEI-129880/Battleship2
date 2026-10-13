@@ -15,6 +15,39 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class TasksTest {
 
+    @Test
+    void consoleCommandsShareTheGraphicalSessionAndAdvanceClock() throws Exception {
+        org.junit.jupiter.api.Assumptions.assumeFalse(java.awt.GraphicsEnvironment.isHeadless());
+        var originalInput = System.in;
+        var originalOutput = System.out;
+        var output = new java.io.ByteArrayOutputStream();
+        try {
+            System.setIn(new java.io.ByteArrayInputStream(
+                    "tabuleiro\ngerafrota\nrajada A1 B2 C3\ntiros\nestado\nmapa\ndesisto\n"
+                            .getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+            System.setOut(new java.io.PrintStream(output, true, java.nio.charset.StandardCharsets.UTF_8));
+            Tasks.menu();
+            javax.swing.SwingUtilities.invokeAndWait(() -> {});
+            javax.swing.SwingUtilities.invokeAndWait(() -> {});
+            String text = output.toString(java.nio.charset.StandardCharsets.UTF_8);
+            assertTrue(text.contains("Tempo da jogada 1:"));
+            assertTrue(text.contains("Bons ventos!"));
+            assertFalse(text.contains("Gera ou coloca primeiro"));
+            assertFalse(text.contains("Comando desconhecido"));
+        } finally {
+            System.setIn(originalInput);
+            System.setOut(originalOutput);
+        }
+    }
+
+    @Test
+    void parsesCompactAndSpacedShotsAndRejectsBadInput() {
+        assertEquals(Tasks.parseShots("A1 B2 C3"), Tasks.parseShots("A 1 b 2 C 3"));
+        assertThrows(IllegalArgumentException.class, () -> Tasks.parseShots("A1 B2"));
+        assertThrows(IllegalArgumentException.class, () -> Tasks.parseShots("A1 B2 Z30"));
+        assertThrows(IllegalArgumentException.class, () -> Tasks.parseShots("A1 B2 C3 D4"));
+    }
+
 	@BeforeEach
 	void setUp() {
 	}

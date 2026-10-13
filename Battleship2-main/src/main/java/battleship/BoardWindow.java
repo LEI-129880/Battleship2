@@ -36,6 +36,8 @@ public final class BoardWindow extends JFrame {
     private static final Color INK = new Color(30, 42, 51);
     private static final Color BLUE = new Color(39, 87, 118);
     private BoardMatch match = new BoardMatch();
+    private MoveClock clock;
+    private int moveNumber = 1;
     private final Set<IPosition> selected = new java.util.LinkedHashSet<>();
     private FleetPlacement.Kind kind = FleetPlacement.Kind.GALLEON;
     private Compass bearing = Compass.NORTH;
@@ -69,6 +71,7 @@ public final class BoardWindow extends JFrame {
         computer = new Timer(650, event -> {
             if (match.phase() == BoardMatch.Phase.COMPUTER) {
                 match.computerTurn();
+                if (match.phase() == BoardMatch.Phase.PLAYER) startClock();
                 message.setText(match.phase() == BoardMatch.Phase.LOST
                         ? "A tua frota foi afundada. Podes começar uma nova partida."
                         : "O adversário respondeu. Seleciona as próximas posições na frota inimiga.");
@@ -77,7 +80,7 @@ public final class BoardWindow extends JFrame {
         });
         computer.setRepeats(false);
         addWindowListener(new WindowAdapter() {
-            @Override public void windowClosed(WindowEvent event) { computer.stop(); }
+            @Override public void windowClosed(WindowEvent event) { computer.stop(); closeClock(); }
         });
 
         JPanel root = new JPanel(new BorderLayout(0, 22));
@@ -175,16 +178,20 @@ public final class BoardWindow extends JFrame {
         });
         undo.addActionListener(event -> {
             match.placement().undo();
+            closeClock();
             message.setText("Último navio retirado. Escolhe onde o colocar.");
             refresh();
         });
         randomize.addActionListener(event -> {
             match.randomize();
+            moveNumber = 1;
+            startClock();
             message.setText("Frota pronta. Clica em Começar partida.");
             refresh();
         });
         start.addActionListener(event -> {
             match.start();
+            startClock();
             message.setText("A frota inimiga está escondida. Seleciona três posições para atacar.");
             refresh();
         });
@@ -233,9 +240,13 @@ public final class BoardWindow extends JFrame {
     private void place(int row, int col) {
         if (match.phase() != BoardMatch.Phase.PLACEMENT || match.placement().complete()) return;
         if (match.placement().place(kind, bearing, row, col)) {
+            hoverRow = -1;
+            hoverCol = -1;
+            ownBoard.clearPreview();
+            if (match.placement().complete()) startClock();
             message.setText(match.placement().complete()
                     ? "Os 11 navios estão colocados. Podes começar a partida."
-                    : kind.label + " colocado. Continua a preparar a tua frota.");
+                    : kind.label + " inteiro colocado (" + kind.size + " casas). Escolhe o próximo navio.");
         } else {
             message.setText("Posição inválida: mantém o navio dentro do tabuleiro e afastado dos restantes.");
         }
@@ -265,6 +276,7 @@ public final class BoardWindow extends JFrame {
     private void attack() {
         if (match.phase() != BoardMatch.Phase.PLAYER || selected.size() != match.shotsRequired()) return;
         match.attack(new ArrayList<>(selected));
+        finishTurn();
         selected.clear();
         message.setText(match.phase() == BoardMatch.Phase.WON
                 ? "Vitória! Afundaste toda a frota inimiga."
@@ -275,6 +287,8 @@ public final class BoardWindow extends JFrame {
 
     private void resetMatch() {
         computer.stop();
+        closeClock();
+        moveNumber = 1;
         match = new BoardMatch();
         selected.clear();
         kind = FleetPlacement.Kind.GALLEON;
@@ -283,6 +297,50 @@ public final class BoardWindow extends JFrame {
         recorded = false;
         message.setText("Escolhe um navio e coloca-o no teu tabuleiro.");
         refresh();
+    }
+
+    private void startClock() {
+        if (clock == null) clock = new MoveClock();
+        clock.start(moveNumber);
+    }
+
+    private void finishTurn() {
+        if (clock != null) System.out.println("Tempo da jogada " + moveNumber + ": " + clock.stop());
+        moveNumber++;
+    }
+
+    private void closeClock() {
+        if (clock != null) { clock.close(); clock = null; }
+    }
+
+    // Console commands and button callbacks run on the same Swing event thread.
+    Game consoleGame() { return match.player(); }
+
+    void consoleFleet(IFleet fleet) {
+        resetMatch();
+        match.loadFleet(fleet);
+        startClock();
+        message.setText("Frota carregada da consola. Podes começar a partida.");
+        refresh();
+    }
+
+    void consoleShots(List<IPosition> shots) {
+        boolean answeringPlayer = match.phase() == BoardMatch.Phase.COMPUTER;
+        match.receiveShots(shots);
+        computer.stop();
+        selected.clear();
+        if (!answeringPlayer) finishTurn();
+        if (match.phase() == BoardMatch.Phase.PLAYER) startClock();
+        message.setText(match.phase() == BoardMatch.Phase.LOST
+                ? "A tua frota foi afundada. Gera uma nova frota."
+                : "Rajada da consola aplicada à tua frota.");
+        refresh();
+    }
+
+    void consoleRandomShots() {
+        List<IPosition> available = BoardMatch.available(match.player());
+        java.util.Collections.shuffle(available);
+        consoleShots(BoardMatch.padVolley(available.subList(0, Math.min(Game.NUMBER_SHOTS, available.size()))));
     }
 
     private void refresh() {
@@ -302,7 +360,7 @@ public final class BoardWindow extends JFrame {
         for (FleetPlacement.Kind entry : FleetPlacement.Kind.values()) {
             JRadioButton button = shipButtons.get(entry);
             int remaining = match.placement().remaining(entry);
-            button.setText(entry.label + "  × " + remaining);
+            button.setText(entry.label + " (" + entry.size + ") × " + remaining);
             button.setToolTipText(entry.size + " posições" + (entry == FleetPlacement.Kind.GALLEON ? ", em T" : ""));
             button.setSelected(entry == kind);
             button.setEnabled(placing && remaining > 0);
@@ -320,7 +378,7 @@ public final class BoardWindow extends JFrame {
                 placing && !match.placement().complete());
         enemyBoard.display(BoardView.snapshot(match.enemy(), finished), selected,
                 BoardMatch.firedAt(match.enemy()), playing);
-        selectionCount.setText(placing ? "Coloca manualmente ou usa Gerar frota."
+        selectionCount.setText(placing ? "1 clique coloca o navio inteiro. Verde: cabe; contorno vermelho: posição inválida."
                 : finished ? "Partida terminada. Usa Nova partida para voltar a jogar."
                 : match.phase() == BoardMatch.Phase.COMPUTER ? "Turno do adversário"
                 : "Rajada: " + selected.size() + " de " + match.shotsRequired() + " posições selecionadas");
