@@ -40,6 +40,8 @@ public class Tasks {
 
 		IFleet myFleet = null;
 		IGame game = null;
+		MoveClock clock = new MoveClock();
+		int moveNumber = 1;
 		menuHelp();
 
 		System.out.print("> ");
@@ -52,11 +54,15 @@ public class Tasks {
 					myFleet = Fleet.createRandom();
 					game = new Game(myFleet);
 					game.printMyBoard(false, true);
+					moveNumber = 1;
+					clock.start(moveNumber);
 					break;
 				case LEFROTA:
 					myFleet = buildFleet(in);
 					game = new Game(myFleet);
 					game.printMyBoard(false, true);
+					moveNumber = 1;
+					clock.start(moveNumber);
 					break;
 				case STATUS:
 					if (myFleet != null)
@@ -66,18 +72,29 @@ public class Tasks {
 					if (myFleet != null)
 						game.printMyBoard(false, true);
 					break;
+
 				case RAJADA:
 					if (game != null) {
 						game.readEnemyFire(in);
+
+						String elapsed = clock.stop();
+
+						System.out.println("Tempo da jogada "
+								+ moveNumber + ": " + elapsed);
+
 						myFleet.printStatus();
 						game.printMyBoard(true, false);
 
 						if (game.getRemainingShips() == 0) {
 							game.over();
+							clock.close();
 							System.exit(0);
 						}
+
+						clock.start(++moveNumber);
 					}
 					break;
+
 				case SIMULA:
 					if (game != null) {
 						while (game.getRemainingShips() > 0){
@@ -110,6 +127,7 @@ public class Tasks {
 			System.out.print("> ");
 			command = in.next();
 		}
+		clock.close();
 		System.out.println(GOODBYE_MESSAGE);
 	}
 
