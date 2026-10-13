@@ -149,3 +149,22 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ---
 **Maintained by:** [@britoeabreu](https://github.com/britoeabreu)  
 *Created for the Software Engineering students at ISCTE-IUL.*
+
+
+## Visualização gráfica do tabuleiro (Issue #2)
+
+Contribuição do aluno 129890, com a biblioteca Maven `com.formdev:flatlaf:3.7.2`.
+
+No IntelliJ, carregue o projeto Maven e execute `battleship.BoardWindow`.
+A janela gera uma frota e apresenta as linhas A-J e as colunas 1-10. Selecione
+três posições e clique em **Disparar rajada**. Clique numa seleção para a retirar.
+O tabuleiro distingue água, navios, tiros falhados, acertos e navios afundados
+por símbolos, cores e descrições. **Nova frota** reinicia a simulação.
+A frota está visível porque esta versão é um simulador. Os tiros repetidos são
+aceites e contabilizados pelo motor original do jogo.
+
+O modo de consola continua disponível através de `battleship.Main`.
+Execute `mvn test` para correr os testes. O teste Swing é omitido em ambientes
+sem interface gráfica; os testes dos estados do tabuleiro continuam a executar.
+
+Issue: https://github.com/LEI-129880/Battleship2/issues/2
