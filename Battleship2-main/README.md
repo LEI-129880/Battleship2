@@ -153,18 +153,32 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Visualização gráfica do tabuleiro (Issue #2)
 
-Contribuição do aluno 129890, com a biblioteca Maven `com.formdev:flatlaf:3.7.2`.
+Contribuição do aluno 129890, com `com.formdev:flatlaf:3.7.2`.
 
-No IntelliJ, carregue o projeto Maven e execute `battleship.BoardWindow`.
-A janela gera uma frota e apresenta as linhas A-J e as colunas 1-10. Selecione
-três posições e clique em **Disparar rajada**. Clique numa seleção para a retirar.
-O tabuleiro distingue água, navios, tiros falhados, acertos e navios afundados
-por símbolos, cores e descrições. **Nova frota** reinicia a simulação.
-A frota está visível porque esta versão é um simulador. Os tiros repetidos são
-aceites e contabilizados pelo motor original do jogo.
+Execute `battleship.BoardWindow` no IntelliJ. A janela apresenta dois tabuleiros:
+a tua frota à esquerda e a frota inimiga à direita.
 
+1. Escolha o tipo de navio e clique no tabuleiro esquerdo para o colocar.
+   **Rodar** muda a orientação; a pré-visualização indica se a posição é válida.
+   **Desfazer** retira o último navio. **Gerar frota** permite colocação automática.
+2. Coloque os 11 navios: 4 barcas, 3 caravelas, 2 naus, 1 fragata e 1 galeão em T.
+   Mantêm-se as regras do motor original: os navios não se podem tocar.
+3. Clique em **Começar partida**. A frota inimiga fica escondida.
+4. Selecione três posições na grelha inimiga e clique em **Disparar rajada**.
+   Clique novamente numa seleção para a retirar. O computador responde com
+   uma rajada aleatória, sem consultar a posição dos navios do jogador.
+5. O cinzento representa navios; cruzes vermelhas representam acertos; círculos
+   em azul escuro representam tiros na água. As estatísticas atualizam-se por turno.
+6. **Nova partida** reinicia o tabuleiro. As vitórias são contabilizadas apenas
+   durante a sessão atual, sem armazenamento permanente.
+
+Não é permitido voltar a selecionar posições já atingidas. Na última rajada,
+se restarem menos de três posições, o adaptador repete a última posição apenas
+para respeitar o formato de três tiros exigido pelo motor original.
+O adversário gráfico é local e aleatório, não é o LLM das partes C e D da ficha.
 O modo de consola continua disponível através de `battleship.Main`.
+
 Execute `mvn test` para correr os testes. O teste Swing é omitido em ambientes
-sem interface gráfica; os testes dos estados do tabuleiro continuam a executar.
+sem interface gráfica; os testes de colocação, turnos e estados continuam a executar.
 
 Issue: https://github.com/LEI-129880/Battleship2/issues/2

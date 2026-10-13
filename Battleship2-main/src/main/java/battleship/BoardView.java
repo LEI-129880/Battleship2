@@ -18,12 +18,17 @@ final class BoardView {
     private BoardView() {}
 
     static Cell[][] snapshot(IGame game) {
+        return snapshot(game, true);
+    }
+
+    /** Hides unhit enemy ships without changing the underlying game. */
+    static Cell[][] snapshot(IGame game, boolean showShips) {
         Cell[][] cells = new Cell[Game.BOARD_SIZE][Game.BOARD_SIZE];
         for (int row = 0; row < Game.BOARD_SIZE; row++) {
             for (int col = 0; col < Game.BOARD_SIZE; col++) {
                 IPosition position = new Position(row, col);
                 IShip ship = game.getMyFleet().shipAt(position);
-                cells[row][col] = ship == null ? Cell.WATER
+                cells[row][col] = ship == null || !showShips ? Cell.WATER
                         : ship.stillFloating() ? Cell.SHIP : Cell.SUNK;
             }
         }
