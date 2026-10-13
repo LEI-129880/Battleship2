@@ -3,7 +3,7 @@
  */
 package battleship;
 
-public class tabuMain
+public class Main
 {
 	/**
 	 * Main.
