@@ -5,6 +5,21 @@ linter: jetbrains/qodana-jvm-community:2026.2
 projectJDK: "17"
 
 profile:
-  path: .qodana/profiles/profile-129880.yaml
+  base:
+    name: empty
+  inspections:
+    - inspection: MethodCount
+      enabled: true
+      severity: WARNING
+      options:
+        m_limit: 15
+        ignoreGettersAndSetters: false
+        ignoreOverridingMethods: false
+
+    - inspection: ClassComplexity
+      enabled: true
+      severity: WARNING
+      options:
+        m_limit: 80
 
 failThreshold: 0
