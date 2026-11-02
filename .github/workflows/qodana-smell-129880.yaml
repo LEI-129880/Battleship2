@@ -26,6 +26,6 @@ jobs:
       - name: Analisar classes grandes
         uses: JetBrains/qodana-action@v2026.2
         with:
-          args: --config qodana-129880.yaml
+          args: --config qodana-129880.yaml --linter qodana-jvm-community
           use-annotations: true
           post-pr-comment: true
