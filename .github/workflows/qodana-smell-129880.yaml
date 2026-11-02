@@ -26,6 +26,6 @@ jobs:
       - name: Analisar classes grandes
         uses: JetBrains/qodana-action@v2026.2
         with:
-          args: --config Battleship2-main/qodana-129880.yaml --linter qodana-jvm-community
+          args: --config Battleship2-main/qodana-129880.yaml --linter qodana-jvm-community --profile-path .qodana/profiles/profile-129880.yaml
           use-annotations: true
           post-pr-comment: true
