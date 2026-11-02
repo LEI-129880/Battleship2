@@ -5,17 +5,17 @@ permissions:
 
 jobs:
   qodana:
+    name: Qodana Large Class 129880
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
-      - name: Qodana Large Class Analysis
+      - name: Analisar classes grandes
         uses: JetBrains/qodana-action@v2026.2
         with:
           args: --config qodana-129880.yaml
           use-annotations: true
-          upload-result: true
+          post-pr-comment: true
