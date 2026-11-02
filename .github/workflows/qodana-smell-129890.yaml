@@ -1,0 +1,30 @@
+# 129890 - Rafael Filipe Machuqueiro Balão
+name: Qodana Long Method 129890
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  qodana:
+    name: Qodana Long Method 129890
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Analisar métodos longos
+        uses: JetBrains/qodana-action@v2026.2
+        with:
+          args: --config qodana-129890.yaml
+          use-annotations: true
+          post-pr-comment: true

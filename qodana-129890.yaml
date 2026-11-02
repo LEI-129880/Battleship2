@@ -1,0 +1,10 @@
+# 129890 - Rafael Filipe Machuqueiro Balão
+version: "1.0"
+linter: jetbrains/qodana-jvm-community:2026.2
+projectJDK: "21"
+bootstrap: mvn -B -f Battleship2-main/pom.xml -DskipTests compile
+profile:
+  path: .qodana/profiles/profile-129890.yaml
+failureConditions:
+  severityThresholds:
+    any: 0
