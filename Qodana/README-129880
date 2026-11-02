@@ -1,0 +1,9 @@
+
+Code Smell: Large Class
+
+| Inspeção no IntelliJ | ID da inspeção | Métrica / Limite | Limitações |
+|---|---|---|---|
+| Class with too many methods | MethodCount | NOM > 15 | Utiliza um limite absoluto, não considerando todas as características estruturais da classe. |
+| Overly complex class | ClassComplexity | Complexidade acumulada > 80 | Não permite reproduzir integralmente as condições do livro, nomeadamente TCC e ATFD. |
+
+execucao: 
