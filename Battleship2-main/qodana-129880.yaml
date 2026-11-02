@@ -5,6 +5,6 @@ linter: qodana-jvm-community
 projectJDK: 17
 
 profile:
-  path: .qodana/profiles/profile-129880.yaml
+  path: ../.qodana/profiles/profile-129880.yaml
 
 failThreshold: 0
