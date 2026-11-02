@@ -24,8 +24,9 @@ jobs:
           fetch-depth: 0
 
       - name: Analisar classes grandes
-        uses: JetBrains/qodana-action@v2026.2
-        with:
-          args: --config qodana-129880.yaml --linter qodana-jvm-community --pr-mode false
-          use-annotations: true
-          post-pr-comment: true
+  uses: JetBrains/qodana-action@v2026.2
+  with:
+    args: --config qodana-129880.yaml --linter qodana-jvm-community
+    pr-mode: false
+    use-annotations: true
+    post-pr-comment: true
