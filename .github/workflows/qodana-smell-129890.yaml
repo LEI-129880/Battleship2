@@ -25,7 +25,8 @@ jobs:
       - name: Analisar métodos longos
         uses: JetBrains/qodana-action@v2026.2
         with:
-          args: --config qodana-129890.yaml
+          args: --config qodana-129890.yaml --profile-path .qodana/profiles/profile-129890.yaml
           pr-mode: false
+          upload-result: true
           use-annotations: true
           post-pr-comment: true
