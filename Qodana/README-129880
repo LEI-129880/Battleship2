@@ -7,8 +7,11 @@ Code Smell: Large Class
 | Overly complex class | ClassComplexity | Complexidade acumulada > 80 | Não permite reproduzir integralmente as condições do livro, nomeadamente TCC e ATFD. |
 
 execucoes: 
+
 fail -> https://github.com/LEI-129880/Battleship2/actions/runs/41726504666/job/126232552579?pr=14
-quando criei uma classe com 20 metodos, ou seja acima do limite, este deu erro no workflow, pois ficou com mais uma large class
+quando criei uma classe com 20 metodos, ou seja acima do limite, este deu erro no workflow, pois ficou com mais uma large class. 
+Como esperado o merge ficou bloqueado.
+
 sucess ->https://github.com/LEI-129880/Battleship2/actions/runs/41727119875/job/126234717779?pr=14
 apos remover alguns metodos da classe de forma a deixar a mesmoa com menos de 15, este passou no teste como esperado
 
