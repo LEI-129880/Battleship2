@@ -23,4 +23,6 @@ profile:
       options:
         m_limit: 80
 
-failThreshold: 0
+failureConditions:
+  severityThresholds:
+    any: 9
