@@ -17,10 +17,4 @@ public class LargeClassTest {
     public int method12() { return 12; }
     public int method13() { return 13; }
     public int method14() { return 14; }
-    public int method15() { return 15; }
-    public int method16() { return 16; }
-    public int method17() { return 17; }
-    public int method18() { return 18; }
-    public int method19() { return 19; }
-    public int method20() { return 20; }
 }
