@@ -5,7 +5,7 @@ public final class MethodNameDemo129890 {
     private MethodNameDemo129890() {
     }
 
-    public static int CalcularPontos(int hits) {
+    public static int calcularPontos(int hits) {
         return hits * 10;
     }
 }
