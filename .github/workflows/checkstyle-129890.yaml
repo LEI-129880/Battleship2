@@ -1,0 +1,30 @@
+# 129890 - Rafael Filipe Machuqueiro Balão
+name: Checkstyle MethodName 129890
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+jobs:
+  checkstyle:
+    name: Checkstyle MethodName 129890
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar nomes de metodos
+        uses: nikitasavinov/checkstyle-action@abc337fbc4a4f95ccc95e138a16f65b1899796ed # 1.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          checkstyle_config: checkstyle-129890.xml
+          checkstyle_version: '13.9.0'
+          workdir: Battleship2-main/src
+          reporter: github-check
+          filter_mode: nofilter
+          level: error
+          fail_level: error
+          tool_name: Checkstyle MethodName 129890 annotations
