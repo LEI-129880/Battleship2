@@ -2,9 +2,9 @@ package battleship;
 
 public class CheckstyleTest {
 
-    private int playerScore = 10;
+    private int PlayerScore = 10;
 
     public int getScore() {
-        return playerScore;
+        return PlayerScore;
     }
 }
