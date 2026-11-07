@@ -1,0 +1,32 @@
+# 129880 - Pedro Pereira
+name: Qodana Large Class 129880
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, pedro_129880]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  qodana:
+    name: Qodana Large Class 129880
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Analisar classes grandes
+        uses: JetBrains/qodana-action@v2026.2
+        with:
+          args: --config qodana-129880.yaml --linter qodana-jvm-community
+          pr-mode: false
+          use-annotations: true
+          post-pr-comment: true
