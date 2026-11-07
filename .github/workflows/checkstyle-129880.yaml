@@ -1,0 +1,33 @@
+##129880 Pedro Pereira
+name: Checkstyle MemberName 129880
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, pedro_129880, teste-checkstyle-129880]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  checkstyle:
+    name: Checkstyle MemberName 129880
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verificar nomes dos atributos
+        uses: dbelyaev/action-checkstyle@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          checkstyle_config: checkstyle-129880.xml
+          workdir: Battleship2-main/src/main/java
+          reporter: github-pr-check
+          level: error
+          filter_mode: nofilter
+          fail_level: error
