@@ -1,28 +1,12 @@
 # 129880 - Pedro Pereira
 version: "1.0"
-
 linter: jetbrains/qodana-jvm-community:2026.2
-
-projectJDK: "17"
-
+projectJDK: "21"
+rootJavaProjects:
+  - "./Battleship2-main/pom.xml"
 profile:
   base:
-    name: empty
-  inspections:
-    - inspection: MethodCount
-      enabled: true
-      severity: WARNING
-      options:
-        m_limit: 15
-        ignoreGettersAndSetters: false
-        ignoreOverridingMethods: false
-
-    - inspection: ClassComplexity
-      enabled: true
-      severity: WARNING
-      options:
-        m_limit: 80
-
+    path: .qodana/profiles/profile-129880.xml
 failureConditions:
   severityThresholds:
     any: 9
