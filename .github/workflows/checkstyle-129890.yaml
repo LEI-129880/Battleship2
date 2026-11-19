@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verificar nomes de metodos
-        uses: nikitasavinov/checkstyle-action@abc337fbc4a4f95ccc95e138a16f65b1899796ed # 1.0.0
+        uses: dbelyaev/action-checkstyle@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           checkstyle_config: checkstyle-129890.xml
