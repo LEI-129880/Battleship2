@@ -337,6 +337,13 @@ public final class BoardWindow extends JFrame {
         refresh();
     }
 
+    private void recordGameIfFinished(boolean finished) {
+    if (finished && !recorded) {
+        recorded = true;
+        completedGames++;
+        if (match.phase() == BoardMatch.Phase.WON) gamesWon++;
+    }
+}
     void consoleRandomShots() {
         List<IPosition> available = BoardMatch.available(match.player());
         java.util.Collections.shuffle(available);
@@ -347,11 +354,7 @@ public final class BoardWindow extends JFrame {
         boolean placing = match.phase() == BoardMatch.Phase.PLACEMENT;
         boolean playing = match.phase() == BoardMatch.Phase.PLAYER;
         boolean finished = match.phase() == BoardMatch.Phase.WON || match.phase() == BoardMatch.Phase.LOST;
-        if (finished && !recorded) {
-            recorded = true;
-            completedGames++;
-            if (match.phase() == BoardMatch.Phase.WON) gamesWon++;
-        }
+        recordGameIfFinished(finished);
         if (match.placement().remaining(kind) == 0) {
             for (FleetPlacement.Kind available : FleetPlacement.Kind.values()) {
                 if (match.placement().remaining(available) > 0) { kind = available; break; }
