@@ -16,4 +16,3 @@ do IntelliJ o resolve e quem a aplica no seu ramo `Refactoring_<número>`.
 | `Game::randomEnemyFire` | Long Method | Extract Method | 129880 |
 | `Game::printBoardShots` | Complex Conditional | Introduce Variable | 129880 |
 | `Tasks::menu` | Magic Number (3000) | Introduce Constant | 129880 |
-| `BoardMatch::attack` | Complex Conditional | Decompose Conditional | 129880 |
