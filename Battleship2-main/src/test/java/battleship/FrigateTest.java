@@ -168,4 +168,23 @@ public class FrigateTest {
 		assertThrows(NullPointerException.class, () -> new Frigate(Compass.NORTH, null),
 				"Error: NullPointerException should be thrown for null position.");
 	}
+	    @Test
+    @DisplayName("Frigate with SOUTH bearing has correct positions")
+    void testConstructorSouth() {
+        Frigate frigate = new Frigate(
+                Compass.SOUTH, new Position(5, 5));
+
+        assertNotNull(frigate);
+        assertEquals("Fragata", frigate.getCategory());
+        assertEquals(Compass.SOUTH, frigate.getBearing());
+        assertEquals(4, frigate.getSize());
+
+        List<IPosition> positions = frigate.getPositions();
+
+        assertEquals(4, positions.size());
+        assertEquals(new Position(5, 5), positions.get(0));
+        assertEquals(new Position(6, 5), positions.get(1));
+        assertEquals(new Position(7, 5), positions.get(2));
+        assertEquals(new Position(8, 5), positions.get(3));
+    }
 }
