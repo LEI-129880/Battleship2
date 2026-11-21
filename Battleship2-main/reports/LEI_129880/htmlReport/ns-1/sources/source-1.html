@@ -1,0 +1,262 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > BoardMatch</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">battleship</a>
+</div>
+
+<h1>Coverage Summary for Class: BoardMatch (battleship)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BoardMatch</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (17/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.4%
+  </span>
+  <span class="absValue">
+    (38/44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.2%
+  </span>
+  <span class="absValue">
+    (56/57)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BoardMatch$Phase</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (18/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.4%
+  </span>
+  <span class="absValue">
+    (38/44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.3%
+  </span>
+  <span class="absValue">
+    (57/58)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package battleship;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Random;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;/** Two defending boards sharing the existing three-shot Game rules. */
+&nbsp;final class BoardMatch {
+<b class="fc">&nbsp;    enum Phase { PLACEMENT, PLAYER, COMPUTER, WON, LOST }</b>
+&nbsp;
+<b class="fc">&nbsp;    private final FleetPlacement placement = new FleetPlacement();</b>
+&nbsp;    private final Random random;
+<b class="fc">&nbsp;    private Game player = new Game(placement.fleet());</b>
+<b class="fc">&nbsp;    private Game enemy = new Game(new Fleet());</b>
+<b class="fc">&nbsp;    private Phase phase = Phase.PLACEMENT;</b>
+&nbsp;
+<b class="fc">&nbsp;    BoardMatch() { this(new Random()); }</b>
+<b class="fc">&nbsp;    BoardMatch(Random random) { this.random = random; }</b>
+&nbsp;
+<b class="fc">&nbsp;    FleetPlacement placement() { return placement; }</b>
+<b class="fc">&nbsp;    Game player() { return player; }</b>
+<b class="fc">&nbsp;    Game enemy() { return enemy; }</b>
+<b class="fc">&nbsp;    Phase phase() { return phase; }</b>
+&nbsp;
+&nbsp;    void randomize() {
+<b class="fc">&nbsp;        require(Phase.PLACEMENT);</b>
+<b class="fc">&nbsp;        placement.randomize();</b>
+<b class="fc">&nbsp;        player = new Game(placement.fleet());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    void start() {
+<b class="fc">&nbsp;        require(Phase.PLACEMENT);</b>
+<b class="fc">&nbsp;        if (!placement.complete()) throw new IllegalStateException(&quot;Coloca os 11 navios antes de começar.&quot;);</b>
+<b class="fc">&nbsp;        enemy = new Game(Fleet.createRandom());</b>
+<b class="fc">&nbsp;        phase = Phase.PLAYER;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    void loadFleet(IFleet fleet) {
+<b class="fc">&nbsp;        require(Phase.PLACEMENT);</b>
+<b class="fc">&nbsp;        placement.load(fleet);</b>
+<b class="fc">&nbsp;        player = new Game(fleet);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /** Console rajada keeps its original meaning: shots received by our fleet. */
+&nbsp;    void receiveShots(List&lt;IPosition&gt; shots) {
+<b class="fc">&nbsp;        if (!placement.complete()) throw new IllegalStateException(&quot;Gera ou coloca primeiro os 11 navios.&quot;);</b>
+<b class="pc">&nbsp;        if (phase == Phase.WON || phase == Phase.LOST)</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;A partida terminou. Gera uma nova frota.&quot;);</b>
+<b class="fc">&nbsp;        if (shots.size() != Game.NUMBER_SHOTS || shots.stream().anyMatch(p -&gt; !p.isInside()))</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Indica três posições entre A1 e J10.&quot;);</b>
+<b class="pc">&nbsp;        if (phase == Phase.PLACEMENT) start();</b>
+<b class="fc">&nbsp;        player.fireShots(shots);</b>
+<b class="pc">&nbsp;        phase = player.getRemainingShips() == 0 ? Phase.LOST : Phase.PLAYER;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    int shotsRequired() { return Math.min(Game.NUMBER_SHOTS, available(enemy).size()); }</b>
+&nbsp;
+&nbsp;    void attack(List&lt;IPosition&gt; shots) {
+<b class="fc">&nbsp;        require(Phase.PLAYER);</b>
+<b class="fc">&nbsp;        Set&lt;IPosition&gt; available = new HashSet&lt;&gt;(available(enemy));</b>
+<b class="fc">&nbsp;        if (shots.size() != shotsRequired() || new HashSet&lt;&gt;(shots).size() != shots.size()</b>
+<b class="fc">&nbsp;                || !available.containsAll(shots)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Seleciona posições diferentes que ainda não foram atingidas.&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        enemy.fireShots(padVolley(shots));</b>
+<b class="fc">&nbsp;        phase = enemy.getRemainingShips() == 0 ? Phase.WON : Phase.COMPUTER;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    void computerTurn() {
+<b class="fc">&nbsp;        require(Phase.COMPUTER);</b>
+&nbsp;        // The opponent chooses only from coordinates not fired on, without inspecting ships.
+<b class="fc">&nbsp;        List&lt;IPosition&gt; candidates = available(player);</b>
+<b class="fc">&nbsp;        Collections.shuffle(candidates, random);</b>
+<b class="fc">&nbsp;        player.fireShots(padVolley(candidates.subList(0, Math.min(Game.NUMBER_SHOTS, candidates.size()))));</b>
+<b class="pc">&nbsp;        phase = player.getRemainingShips() == 0 ? Phase.LOST : Phase.PLAYER;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    static Set&lt;IPosition&gt; firedAt(IGame game) {
+<b class="fc">&nbsp;        Set&lt;IPosition&gt; shots = new HashSet&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (IMove move : game.getAlienMoves()) {</b>
+<b class="pc">&nbsp;            for (IPosition position : move.getShots()) if (position.isInside()) shots.add(position);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return shots;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    static List&lt;IPosition&gt; available(IGame game) {
+<b class="fc">&nbsp;        Set&lt;IPosition&gt; fired = firedAt(game);</b>
+<b class="fc">&nbsp;        List&lt;IPosition&gt; result = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (int row = 0; row &lt; Game.BOARD_SIZE; row++) {</b>
+<b class="fc">&nbsp;            for (int col = 0; col &lt; Game.BOARD_SIZE; col++) {</b>
+<b class="fc">&nbsp;                Position position = new Position(row, col);</b>
+<b class="fc">&nbsp;                if (!fired.contains(position)) result.add(position);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    static List&lt;IPosition&gt; padVolley(List&lt;IPosition&gt; shots) {
+<b class="fc">&nbsp;        if (shots.isEmpty()) throw new IllegalArgumentException(&quot;A rajada não pode estar vazia.&quot;);</b>
+<b class="fc">&nbsp;        List&lt;IPosition&gt; volley = new ArrayList&lt;&gt;(shots);</b>
+&nbsp;        // Preserve the engine&#39;s three-shot contract when fewer than three cells remain.
+<b class="fc">&nbsp;        while (volley.size() &lt; Game.NUMBER_SHOTS) volley.add(shots.get(shots.size() - 1));</b>
+<b class="fc">&nbsp;        return volley;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void require(Phase expected) {
+<b class="fc">&nbsp;        if (phase != expected) throw new IllegalStateException(&quot;Ação indisponível nesta fase da partida.&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-11-21 16:43</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FleetPlacement</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">battleship</a>
+</div>
+
+<h1>Coverage Summary for Class: FleetPlacement (battleship)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FleetPlacement</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (17/17)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FleetPlacement$Kind</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/29)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package battleship;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/** Places the eleven ships from the assignment using the original collision rules. */
+<b class="fc">&nbsp;final class FleetPlacement {</b>
+<b class="fc">&nbsp;    enum Kind {</b>
+<b class="fc">&nbsp;        GALLEON(&quot;galeao&quot;, &quot;Galeão&quot;, &quot;Galeao&quot;, 1, 5),</b>
+<b class="fc">&nbsp;        FRIGATE(&quot;fragata&quot;, &quot;Fragata&quot;, &quot;Fragata&quot;, 1, 4),</b>
+<b class="fc">&nbsp;        CARRACK(&quot;nau&quot;, &quot;Nau&quot;, &quot;Nau&quot;, 2, 3),</b>
+<b class="fc">&nbsp;        CARAVEL(&quot;caravela&quot;, &quot;Caravela&quot;, &quot;Caravela&quot;, 3, 2),</b>
+<b class="fc">&nbsp;        BARGE(&quot;barca&quot;, &quot;Barca&quot;, &quot;Barca&quot;, 4, 1);</b>
+&nbsp;
+&nbsp;        final String key, label, category;
+&nbsp;        final int quantity, size;
+&nbsp;
+<b class="fc">&nbsp;        Kind(String key, String label, String category, int quantity, int size) {</b>
+<b class="fc">&nbsp;            this.key = key;</b>
+<b class="fc">&nbsp;            this.label = label;</b>
+<b class="fc">&nbsp;            this.category = category;</b>
+<b class="fc">&nbsp;            this.quantity = quantity;</b>
+<b class="fc">&nbsp;            this.size = size;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    private IFleet fleet = new Fleet();</b>
+&nbsp;
+<b class="fc">&nbsp;    IFleet fleet() { return fleet; }</b>
+&nbsp;
+&nbsp;    int remaining(Kind kind) {
+<b class="fc">&nbsp;        return kind.quantity - fleet.getShipsLike(kind.category).size();</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    boolean complete() { return fleet.getShips().size() == IFleet.FLEET_SIZE; }</b>
+&nbsp;
+&nbsp;    /** The pointer always refers to the top-left of the rotated bounding box. */
+&nbsp;    Ship candidate(Kind kind, Compass bearing, int row, int col) {
+<b class="fc">&nbsp;        Ship shape = Ship.buildShip(kind.key, bearing, new Position(4, 4));</b>
+<b class="fc">&nbsp;        int minRow = shape.getPositions().stream().mapToInt(IPosition::getRow).min().orElseThrow();</b>
+<b class="fc">&nbsp;        int minCol = shape.getPositions().stream().mapToInt(IPosition::getColumn).min().orElseThrow();</b>
+<b class="fc">&nbsp;        return Ship.buildShip(kind.key, bearing, new Position(row + 4 - minRow, col + 4 - minCol));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean canPlace(Kind kind, Ship ship) {
+<b class="fc">&nbsp;        return remaining(kind) &gt; 0 &amp;&amp; ship.isInsideBoard()</b>
+<b class="fc">&nbsp;                &amp;&amp; fleet.getShips().stream().noneMatch(existing -&gt; existing.tooCloseTo(ship));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean place(Kind kind, Compass bearing, int row, int col) {
+<b class="fc">&nbsp;        Ship ship = candidate(kind, bearing, row, col);</b>
+<b class="fc">&nbsp;        return canPlace(kind, ship) &amp;&amp; fleet.addShip(ship);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    void undo() {
+<b class="fc">&nbsp;        List&lt;IShip&gt; ships = fleet.getShips();</b>
+<b class="fc">&nbsp;        if (!ships.isEmpty()) ships.remove(ships.size() - 1);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    void randomize() { fleet = Fleet.createRandom(); }</b>
+&nbsp;
+<b class="fc">&nbsp;    void load(IFleet fleet) { this.fleet = fleet; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-11-21 16:43</div>
+</div>
+</body>
+</html>

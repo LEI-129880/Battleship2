@@ -1,0 +1,228 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MoveClock</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">battleship</a>
+</div>
+
+<h1>Coverage Summary for Class: MoveClock (battleship)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MoveClock</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (18/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (52/52)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;
+&nbsp;package battleship;
+&nbsp;
+&nbsp;import java.awt.BorderLayout;
+&nbsp;import java.awt.Color;
+&nbsp;import java.awt.Font;
+&nbsp;import java.awt.GraphicsEnvironment;
+&nbsp;import java.util.concurrent.TimeUnit;
+&nbsp;import javax.swing.BorderFactory;
+&nbsp;import javax.swing.JFrame;
+&nbsp;import javax.swing.JLabel;
+&nbsp;import javax.swing.JPanel;
+&nbsp;import javax.swing.SwingConstants;
+&nbsp;import javax.swing.SwingUtilities;
+&nbsp;import javax.swing.Timer;
+&nbsp;import org.apache.commons.lang3.time.StopWatch;
+&nbsp;
+&nbsp;/** Relogio da jogada, apresentado numa janela independente da consola. */
+&nbsp;public final class MoveClock {
+<b class="fc">&nbsp;    private final StopWatch watch = new StopWatch();</b>
+&nbsp;    private JFrame frame;
+&nbsp;    private JLabel display;
+&nbsp;    private JLabel heading;
+&nbsp;    private Timer refresh;
+<b class="fc">&nbsp;    private volatile int move = 1;</b>
+&nbsp;    private volatile boolean closed;
+&nbsp;
+<b class="fc">&nbsp;    public MoveClock() {</b>
+<b class="pc">&nbsp;        if (!GraphicsEnvironment.isHeadless()) {</b>
+<b class="fc">&nbsp;            SwingUtilities.invokeLater(this::createWindow);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void createWindow() {
+<b class="fc">&nbsp;        if (closed) return;</b>
+<b class="fc">&nbsp;        frame = new JFrame(&quot;Battleship | Relógio&quot;);</b>
+<b class="fc">&nbsp;        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);</b>
+<b class="fc">&nbsp;        frame.setSize(310, 175);</b>
+<b class="fc">&nbsp;        frame.setLocationByPlatform(true);</b>
+<b class="fc">&nbsp;        frame.setResizable(false);</b>
+&nbsp;
+<b class="fc">&nbsp;        JPanel panel = new JPanel(new BorderLayout(0, 10));</b>
+<b class="fc">&nbsp;        panel.setBackground(new Color(19, 31, 51));</b>
+<b class="fc">&nbsp;        panel.setBorder(BorderFactory.createEmptyBorder(18, 20, 20, 20));</b>
+&nbsp;
+<b class="fc">&nbsp;        heading = new JLabel(&quot;JOGADA 1&quot;, SwingConstants.CENTER);</b>
+<b class="fc">&nbsp;        heading.setForeground(new Color(151, 190, 228));</b>
+<b class="fc">&nbsp;        heading.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 15));</b>
+&nbsp;
+<b class="fc">&nbsp;        display = new JLabel(&quot;00:00.0&quot;, SwingConstants.CENTER);</b>
+<b class="fc">&nbsp;        display.setForeground(Color.WHITE);</b>
+<b class="fc">&nbsp;        display.setFont(new Font(&quot;Monospaced&quot;, Font.BOLD, 42));</b>
+&nbsp;
+<b class="fc">&nbsp;        panel.add(heading, BorderLayout.NORTH);</b>
+<b class="fc">&nbsp;        panel.add(display, BorderLayout.CENTER);</b>
+<b class="fc">&nbsp;        frame.setContentPane(panel);</b>
+&nbsp;
+<b class="fc">&nbsp;        refresh = new Timer(100, event -&gt; updateDisplay());</b>
+<b class="fc">&nbsp;        refresh.start();</b>
+<b class="fc">&nbsp;        updateDisplay();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private synchronized String elapsed() {
+<b class="fc">&nbsp;        long millis = watch.getTime(TimeUnit.MILLISECONDS);</b>
+<b class="fc">&nbsp;        return String.format(&quot;%02d:%02d.%01d&quot;,</b>
+<b class="fc">&nbsp;                millis / 60000,</b>
+<b class="fc">&nbsp;                (millis / 1000) % 60,</b>
+<b class="fc">&nbsp;                (millis % 1000) / 100);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void updateDisplay() {
+<b class="fc">&nbsp;        if (display != null) {</b>
+<b class="fc">&nbsp;            display.setText(elapsed());</b>
+<b class="fc">&nbsp;            heading.setText(&quot;JOGADA &quot; + move);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /** Inicia um jogo novo ou uma jogada seguinte, com o tempo a zero. */
+&nbsp;    public synchronized void start(int number) {
+<b class="pc">&nbsp;        if (closed) return;</b>
+<b class="fc">&nbsp;        move = number;</b>
+<b class="fc">&nbsp;        watch.reset();</b>
+<b class="fc">&nbsp;        watch.start();</b>
+&nbsp;
+<b class="fc">&nbsp;        SwingUtilities.invokeLater(() -&gt; {</b>
+<b class="pc">&nbsp;            if (!closed &amp;&amp; frame != null) {</b>
+<b class="fc">&nbsp;                frame.setVisible(true);</b>
+<b class="fc">&nbsp;                updateDisplay();</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;    /** Para o relogio e devolve o tempo final para mostrar na consola. */
+&nbsp;    public synchronized String stop() {
+<b class="pc">&nbsp;        if (watch.isStarted() &amp;&amp; !watch.isStopped()) {</b>
+<b class="fc">&nbsp;            watch.stop();</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        String result = elapsed();</b>
+<b class="fc">&nbsp;        SwingUtilities.invokeLater(this::updateDisplay);</b>
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public synchronized void close() {
+<b class="fc">&nbsp;        closed = true;</b>
+<b class="pc">&nbsp;        if (watch.isStarted() &amp;&amp; !watch.isStopped()) watch.stop();</b>
+<b class="fc">&nbsp;        SwingUtilities.invokeLater(() -&gt; {</b>
+<b class="fc">&nbsp;            if (refresh != null) refresh.stop();</b>
+<b class="fc">&nbsp;            if (frame != null) frame.dispose();</b>
+&nbsp;        });
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-11-21 16:41</div>
+</div>
+</body>
+</html>
