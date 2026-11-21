@@ -50,6 +50,10 @@
       <pattern testClass="battleship.GalleonTest" />
       <pattern testClass="battleship.ShipTest" />
       <pattern testClass="battleship.MethodNameDemo129890Test" />
+      <pattern testClass="battleship.AdditionalPositionTest" />
+      <pattern testClass="battleship.AdditionalBargeTest" />
+      <pattern testClass="battleship.AdditionalCarrackTest" />
+      <pattern testClass="battleship.AdditionalShipTest" />
     </patterns>
     <method v="2">
       <option name="Make" enabled="true" />
