@@ -6,13 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.util.*;
 
-/**
- * Shot
- *
- * @author Your Name
- * Date: 20/02/2026
- * Time: 19:39
- */
+
 public class Move implements IMove {
 
 	//-------------------------------------------------------------------
