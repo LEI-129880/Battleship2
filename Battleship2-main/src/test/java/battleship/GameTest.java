@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Scanner;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Test class for Game.
@@ -99,5 +101,106 @@ public class GameTest {
 		ship2.sink();
 		assertEquals(1, game.getRemainingShips(), "Remaining ships count should be 1 after sinking one of two ships.");
 	}
+	
+    @Test
+    @DisplayName("Reject volleys with incorrect number of shots")
+    void testInvalidVolleySize() {
+        assertThrows(IllegalArgumentException.class,
+                () -> game.fireShots(List.of()));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> game.fireShots(List.of(
+                        new Position(0, 0))));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> game.fireShots(List.of(
+                        new Position(0, 0),
+                        new Position(0, 1),
+                        new Position(0, 2),
+                        new Position(0, 3))));
+
+        assertTrue(game.getAlienMoves().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Duplicate shots in one volley are counted")
+    void testDuplicateShotsInVolley() {
+        Position first = new Position(1, 1);
+
+        game.fireShots(List.of(
+                first,
+                first,
+                new Position(2, 2)));
+
+        assertEquals(1, game.getRepeatedShots());
+        assertEquals(1, game.getAlienMoves().size());
+        assertEquals(0, game.getInvalidShots());
+    }
+
+    @Test
+    @DisplayName("Hitting and sinking a barge updates counters")
+    void testHitAndSinkBarge() {
+        IShip ship = new Barge(
+                Compass.NORTH, new Position(1, 1));
+
+        assertTrue(game.getMyFleet().addShip(ship));
+        assertEquals(1, game.getRemainingShips());
+
+        game.fireSingleShot(new Position(1, 1), false);
+
+        assertEquals(1, game.getHits());
+        assertEquals(1, game.getSunkShips());
+        assertEquals(0, game.getRemainingShips());
+    }
+
+    @Test
+    @DisplayName("Read three valid enemy shots")
+    void testReadEnemyFire() throws Exception {
+        String json = game.readEnemyFire(
+                new Scanner("A1 B2 C3\n"));
+
+        assertNotNull(json);
+        assertEquals(3,
+                new ObjectMapper().readTree(json).size());
+        assertEquals(1, game.getAlienMoves().size());
+    }
+
+    @Test
+    @DisplayName("Reject incomplete enemy shot input")
+    void testReadEnemyFireInvalid() {
+        assertThrows(IllegalArgumentException.class,
+                () -> game.readEnemyFire(
+                        new Scanner("A1 B2\n")));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> game.readEnemyFire(
+                        new Scanner("A 1 B 2 C\n")));
+
+        assertTrue(game.getAlienMoves().isEmpty());
+    }
+
+    @Test
+    @DisplayName("JSON serialization and board printing work")
+    void testJsonAndBoardPrinting() throws Exception {
+        String json = Game.jsonShots(List.of(
+                new Position(0, 0),
+                new Position(1, 1)));
+
+        var parsed = new ObjectMapper().readTree(json);
+
+        assertEquals(2, parsed.size());
+        assertEquals("A",
+                parsed.get(0).get("row").asText());
+        assertEquals(1,
+                parsed.get(0).get("column").asInt());
+
+        assertDoesNotThrow(
+                () -> game.printMyBoard(false, false));
+        assertDoesNotThrow(
+                () -> game.printMyBoard(true, true));
+        assertDoesNotThrow(
+                () -> game.printAlienBoard(false, true));
+        assertDoesNotThrow(game::over);
+    }
 
 }
