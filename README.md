@@ -3,3 +3,7 @@ Ao dar push dos docs, mesmo após ter selecionado a minha conta da faculdade, o 
 https://www.youtube.com/watch?v=5Q-_zM7H2uE
 
 https://www.youtube.com/watch?v=kTqWpGXHps4
+
+
+
+O workflow criado para os testes vai correr em qualquer branch apos um push, tal como quando fazemos pull request para a main
