@@ -6,4 +6,4 @@ https://www.youtube.com/watch?v=kTqWpGXHps4
 
 
 
-O workflow criado para os testes vai correr em qualquer branch apos um push, tal como quando fazemos pull request para a main
+O workflow criado para os testes vai correr em qualquer branch apos um push, tal como quando fazemos pull request para a main     
