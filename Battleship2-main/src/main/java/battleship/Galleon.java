@@ -12,13 +12,18 @@ package battleship;
 public class Galleon extends Ship {
 
 	/**
+	 * The number of positions occupied by a Galleon.
+	 */
+	private static final int SIZE = 5;
+
+	/**
 	 * Instantiates a new Galleon.
 	 *
 	 * @param bearing The bearing of the ship (NORTH, SOUTH, EAST, or WEST).
 	 * @param pos     The initial position of the ship on the game board.
 	 */
 	public Galleon(Compass bearing, IPosition pos) {
-		super("Galeao", bearing, pos, 5);
+		super("Galeao", bearing, pos, SIZE);
 
 		switch (bearing) {
 			case NORTH:
