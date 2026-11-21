@@ -16,6 +16,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 /**
  * Test class for the Caravel class.
  */
@@ -121,5 +123,85 @@ class CaravelTest {
 				new Caravel(null, null), "Error: A NullPointerException should have been thrown for null direction and position.");
 		assertEquals("Ship's bearing must not be null", exception2.getMessage(),
 				"Error: The exception message does not match the expected value.");
+	}
+
+	@Test
+	@DisplayName("A caravela tem a categoria 'Caravela' e ocupa 2 posições")
+	void categoryAndPositions() {
+		assertEquals("Caravela", cN.getCategory(), "Error: The Caravel category should be 'Caravela'.");
+		assertEquals(2, cN.getPositions().size(), "Error: The Caravel should occupy 2 positions.");
+	}
+
+	@Test
+	@DisplayName("Virada a NORTE ocupa a origem e a célula abaixo")
+	void positionsNorth() {
+		List<IPosition> positions = cN.getPositions();
+		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for NORTH.");
+		assertEquals(new Position(6, 5), positions.get(1), "Error: Second position is incorrect for NORTH.");
+	}
+
+	@Test
+	@DisplayName("Virada a SUL ocupa a origem e a célula abaixo")
+	void positionsSouth() {
+		List<IPosition> positions = cS.getPositions();
+		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for SOUTH.");
+		assertEquals(new Position(6, 5), positions.get(1), "Error: Second position is incorrect for SOUTH.");
+	}
+
+	@Test
+	@DisplayName("Virada a ESTE ocupa a origem e a célula à direita")
+	void positionsEast() {
+		List<IPosition> positions = cE.getPositions();
+		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for EAST.");
+		assertEquals(new Position(5, 6), positions.get(1), "Error: Second position is incorrect for EAST.");
+	}
+
+	@Test
+	@DisplayName("Virada a OESTE ocupa a origem e a célula à direita")
+	void positionsWest() {
+		List<IPosition> positions = cW.getPositions();
+		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for WEST.");
+		assertEquals(new Position(5, 6), positions.get(1), "Error: Second position is incorrect for WEST.");
+	}
+
+	@Test
+	@DisplayName("Os limites da caravela correspondem às posições ocupadas")
+	void bounds() {
+		assertAll("bounds",
+				() -> assertEquals(5, cN.getTopMostPos(), "Error: NORTH topmost should be 5."),
+				() -> assertEquals(6, cN.getBottomMostPos(), "Error: NORTH bottommost should be 6."),
+				() -> assertEquals(5, cN.getLeftMostPos(), "Error: NORTH leftmost should be 5."),
+				() -> assertEquals(5, cN.getRightMostPos(), "Error: NORTH rightmost should be 5."),
+				() -> assertEquals(5, cE.getTopMostPos(), "Error: EAST topmost should be 5."),
+				() -> assertEquals(5, cE.getBottomMostPos(), "Error: EAST bottommost should be 5."),
+				() -> assertEquals(5, cE.getLeftMostPos(), "Error: EAST leftmost should be 5."),
+				() -> assertEquals(6, cE.getRightMostPos(), "Error: EAST rightmost should be 6."));
+	}
+
+	@Test
+	@DisplayName("A caravela só afunda quando as 2 posições são atingidas")
+	void sinking() {
+		Caravel c = new Caravel(Compass.EAST, new Position(2, 2));
+		c.shoot(new Position(2, 2));
+		assertTrue(c.stillFloating(), "Error: The Caravel should still float after one hit.");
+		c.shoot(new Position(2, 3));
+		assertFalse(c.stillFloating(), "Error: The Caravel should sink after both positions are hit.");
+	}
+
+	@Test
+	@DisplayName("getAdjacentPositions não repete posições nem inclui as da caravela")
+	void adjacentPositions() {
+		List<IPosition> adjacents = cN.getAdjacentPositions();
+		assertEquals(10, adjacents.size(), "Error: A vertical Caravel in the middle should have 10 adjacent positions.");
+		for (IPosition position : cN.getPositions())
+			assertFalse(adjacents.contains(position), "Error: The Caravel's own positions should not be adjacent.");
+		assertEquals(adjacents.size(), new java.util.HashSet<>(adjacents).size(), "Error: Adjacent positions should not repeat.");
+	}
+
+	@Test
+	@DisplayName("O construtor lança NullPointerException com posição nula")
+	void constructorNullPosition() {
+		assertThrows(NullPointerException.class, () -> new Caravel(Compass.NORTH, null),
+				"Error: A NullPointerException should have been thrown for a null position.");
 	}
 }
