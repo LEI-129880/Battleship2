@@ -58,16 +58,40 @@ final class BoardMatch {
 
     int shotsRequired() { return Math.min(Game.NUMBER_SHOTS, available(enemy).size()); }
 
+
     void attack(List<IPosition> shots) {
         require(Phase.PLAYER);
-        Set<IPosition> available = new HashSet<>(available(enemy));
-        if (shots.size() != shotsRequired() || new HashSet<>(shots).size() != shots.size()
-                || !available.containsAll(shots)) {
-            throw new IllegalArgumentException("Seleciona posições diferentes que ainda não foram atingidas.");
+
+        Set<IPosition> available =
+                new HashSet<>(available(enemy));
+
+        if (hasInvalidShotCount(shots)
+                || hasDuplicateShots(shots)
+                || hasUnavailableShots(shots, available)) {
+            throw new IllegalArgumentException(
+                    "Seleciona posições diferentes que ainda não foram atingidas.");
         }
+
         enemy.fireShots(padVolley(shots));
-        phase = enemy.getRemainingShips() == 0 ? Phase.WON : Phase.COMPUTER;
+
+        phase = enemy.getRemainingShips() == 0
+                ? Phase.WON : Phase.COMPUTER;
     }
+
+    private boolean hasInvalidShotCount(List<IPosition> shots) {
+        return shots.size() != shotsRequired();
+    }
+
+    private boolean hasDuplicateShots(List<IPosition> shots) {
+        return new HashSet<>(shots).size() != shots.size();
+    }
+
+    private boolean hasUnavailableShots(
+            List<IPosition> shots,
+            Set<IPosition> available) {
+        return !available.containsAll(shots);
+    }
+
 
     void computerTurn() {
         require(Phase.COMPUTER);
