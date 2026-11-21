@@ -9,9 +9,8 @@ import java.util.List;
 
 /**
  * Test class for the Carrack class.
- * Author: ${user.name}
- * Date: ${current_date}
- * Time: ${current_time}
+ * Author: Rafael Balão (129890)
+ * Date: 2026-11-21
  * Cyclomatic Complexity for each method:
  * - Constructor: 5
  * - getSize: 1

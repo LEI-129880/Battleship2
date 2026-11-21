@@ -12,13 +12,18 @@ package battleship;
 public class Galleon extends Ship {
 
 	/**
+	 * The number of positions occupied by a Galleon.
+	 */
+	private static final int SIZE = 5;
+
+	/**
 	 * Instantiates a new Galleon.
 	 *
 	 * @param bearing The bearing of the ship (NORTH, SOUTH, EAST, or WEST).
 	 * @param pos     The initial position of the ship on the game board.
 	 */
 	public Galleon(Compass bearing, IPosition pos) {
-		super("Galeao", bearing, pos, 5);
+		super("Galeao", bearing, pos, SIZE);
 
 		switch (bearing) {
 			case NORTH:
@@ -43,10 +48,10 @@ public class Galleon extends Ship {
 	 */
 	private void fillNorth(IPosition pos) {
 		for (int i = 0; i < 3; i++) {
-			getPositions().add(new Position(pos.getRow(), pos.getColumn() + i));
+			addPosition(pos.getRow(), pos.getColumn() + i);
 		}
-		getPositions().add(new Position(pos.getRow() + 1, pos.getColumn() + 1));
-		getPositions().add(new Position(pos.getRow() + 2, pos.getColumn() + 1));
+		addPosition(pos.getRow() + 1, pos.getColumn() + 1);
+		addPosition(pos.getRow() + 2, pos.getColumn() + 1);
 	}
 
 	/**
@@ -56,10 +61,10 @@ public class Galleon extends Ship {
 	 */
 	private void fillSouth(IPosition pos) {
 		for (int i = 0; i < 2; i++) {
-			getPositions().add(new Position(pos.getRow() + i, pos.getColumn()));
+			addPosition(pos.getRow() + i, pos.getColumn());
 		}
 		for (int j = 2; j < 5; j++) {
-			getPositions().add(new Position(pos.getRow() + 2, pos.getColumn() + j - 3));
+			addPosition(pos.getRow() + 2, pos.getColumn() + j - 3);
 		}
 	}
 
@@ -69,11 +74,11 @@ public class Galleon extends Ship {
 	 * @param pos The initial position of the ship.
 	 */
 	private void fillEast(IPosition pos) {
-		getPositions().add(new Position(pos.getRow(), pos.getColumn()));
+		addPosition(pos.getRow(), pos.getColumn());
 		for (int i = 1; i < 4; i++) {
-			getPositions().add(new Position(pos.getRow() + 1, pos.getColumn() + i - 3));
+			addPosition(pos.getRow() + 1, pos.getColumn() + i - 3);
 		}
-		getPositions().add(new Position(pos.getRow() + 2, pos.getColumn()));
+		addPosition(pos.getRow() + 2, pos.getColumn());
 	}
 
 	/**
@@ -82,10 +87,20 @@ public class Galleon extends Ship {
 	 * @param pos The initial position of the ship.
 	 */
 	private void fillWest(IPosition pos) {
-		getPositions().add(new Position(pos.getRow(), pos.getColumn()));
+		addPosition(pos.getRow(), pos.getColumn());
 		for (int i = 1; i < 4; i++) {
-			getPositions().add(new Position(pos.getRow() + 1, pos.getColumn() + i - 1));
+			addPosition(pos.getRow() + 1, pos.getColumn() + i - 1);
 		}
-		getPositions().add(new Position(pos.getRow() + 2, pos.getColumn()));
+		addPosition(pos.getRow() + 2, pos.getColumn());
+	}
+
+	/**
+	 * Adds the position (row, column) to the positions occupied by the Galleon.
+	 *
+	 * @param row    the row of the position
+	 * @param column the column of the position
+	 */
+	private void addPosition(int row, int column) {
+		getPositions().add(new Position(row, column));
 	}
 }

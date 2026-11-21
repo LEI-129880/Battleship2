@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Testes adicionais de Barge (129890), criados na ficha 4 para maximizar a cobertura.
  * Os testes originais continuam em BargeTest.
+ *
+ * @author Rafael Balão (129890)
  */
 @DisplayName("Testes adicionais da classe Barge")
 public class AdditionalBargeTest {

@@ -97,7 +97,7 @@ public abstract class Ship implements IShip
 	/**
 	 * The Positions occupied by the ship.
 	 */
-	protected List<IPosition> positions;
+	private List<IPosition> positions;
 
 	/**
 	 * Create ships
@@ -159,8 +159,7 @@ public abstract class Ship implements IShip
 		List<IPosition> adjacentPositions = new ArrayList<IPosition>();
 		for (IPosition position : getPositions())
 		{
-			List<IPosition> adjacents = position.adjacentPositions();
-			for (IPosition adj : adjacents)
+			for (IPosition adj : position.adjacentPositions())
 				if (!getPositions().contains(adj) && !adjacentPositions.contains(adj))
 					adjacentPositions.add(adj);
 		}

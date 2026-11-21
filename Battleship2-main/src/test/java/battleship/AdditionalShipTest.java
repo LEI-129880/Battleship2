@@ -8,6 +8,8 @@ import java.util.List;
 /**
  * Testes adicionais de Ship (129890), criados na ficha 4 para maximizar a cobertura.
  * Os testes originais continuam em ShipTest.
+ *
+ * @author Rafael Balão (129890)
  */
 @DisplayName("Testes adicionais da classe abstrata Ship")
 public class AdditionalShipTest {
