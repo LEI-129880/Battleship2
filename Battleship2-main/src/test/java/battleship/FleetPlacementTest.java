@@ -154,4 +154,31 @@ class FleetPlacementTest {
         assertFalse(placement.complete());
         assertEquals(4, placement.remaining(FleetPlacement.Kind.BARGE));
     }
+    
+@Test
+@DisplayName("Placement fails when fleet rejects a valid ship")
+void testFleetRejectsValidShip() {
+    FleetPlacement placement = new FleetPlacement();
+
+    Fleet rejectingFleet = new Fleet() {
+        @Override
+        public boolean addShip(IShip ship) {
+            return false;
+        }
+    };
+
+    placement.load(rejectingFleet);
+
+    assertFalse(placement.place(
+            FleetPlacement.Kind.BARGE,
+            Compass.NORTH,
+            0,
+            0
+    ));
+
+    assertTrue(placement.fleet().getShips().isEmpty());
+    assertEquals(4,
+            placement.remaining(FleetPlacement.Kind.BARGE));
+}
+
 }
