@@ -8,9 +8,6 @@ import java.util.ArrayList;
 
 /**
  * Test class for Fleet.
- * Author: ${user.name}
- * Date: ${current_date}
- * Time: ${current_time}
  * Cyclomatic Complexity for each method:
  * - Constructor: 1
  * - addShip: 3
