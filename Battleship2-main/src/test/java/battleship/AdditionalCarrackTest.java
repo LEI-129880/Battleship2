@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Testes adicionais de Carrack (129890), criados na ficha 4 para maximizar a cobertura.
  * Os testes originais continuam em CarrackTest.
+ *
+ * @author Rafael Balão (129890)
  */
 @DisplayName("Testes adicionais da classe Carrack")
 public class AdditionalCarrackTest {

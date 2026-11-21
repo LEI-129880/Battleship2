@@ -8,6 +8,8 @@ import java.util.List;
 /**
  * Testes adicionais de Position (129890), criados na ficha 4 para maximizar a cobertura.
  * Os testes originais continuam em PositionTest.
+ *
+ * @author Rafael Balão (129890)
  */
 @DisplayName("Testes adicionais da classe Position")
 public class AdditionalPositionTest {

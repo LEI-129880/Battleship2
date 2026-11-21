@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for MethodNameDemo129890.
+ * Author: Rafael Balão (129890)
  * Cyclomatic Complexity:
  * - Constructor: 1
  * - calcularPontos: 1
