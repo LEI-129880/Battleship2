@@ -11,3 +11,9 @@ do IntelliJ o resolve e quem a aplica no seu ramo `Refactoring_<número>`.
 | `Galleon::Galleon` | Magic Number (tamanho `5` passado diretamente ao construtor) | Introduce Constant | 129890 |
 | `Galleon::fillNorth/fillSouth/fillEast/fillWest` | Duplicated Code (`getPositions().add(new Position(...))` repetido 11 vezes) | Extract Method | 129890 |
 | `Ship::positions` | Data Class / encapsulamento fraco (campo `protected`, mas todos os acessos usam o getter) | Encapsulate Fields | 129890 |
+| `Fleet::colisionRisk` | Mysterious Name | Rename | 129880 |
+| `Fleet::colisionRisk` | Loop indexado desnecessário | Replace with enhanced for | 129880 |
+| `Game::randomEnemyFire` | Long Method | Extract Method | 129880 |
+| `Game::printBoardShots` | Complex Conditional | Introduce Variable | 129880 |
+| `Tasks::menu` | Magic Number (3000) | Introduce Constant | 129880 |
+| `BoardMatch::attack` | Complex Conditional | Decompose Conditional | 129880 |
