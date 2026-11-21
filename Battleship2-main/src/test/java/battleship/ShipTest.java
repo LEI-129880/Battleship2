@@ -394,4 +394,41 @@ public class ShipTest {
         assertEquals("[Barca n F6]", ship.toString(), "Error: Wrong string representation.");
         assertEquals("[Caravela e A1]", new Caravel(Compass.EAST, new Position(0, 0)).toString(), "Error: Wrong string representation.");
     }
+
+    /**
+     * Returns true when the JVM runs with assertions enabled (-ea),
+     * which is the default for IntelliJ and for Maven Surefire.
+     */
+    private static boolean assertionsEnabled() {
+        boolean enabled = false;
+        assert enabled = true;
+        return enabled;
+    }
+
+    @Test
+    @DisplayName("buildShip rejeita (assert) tipo, orientação ou posição nulos")
+    void testBuildShipAssertions() {
+        if (!assertionsEnabled()) return;
+        Position origin = new Position(1, 1);
+        assertThrows(AssertionError.class, () -> Ship.buildShip(null, Compass.NORTH, origin), "Error: null kind should fail the assertion.");
+        assertThrows(AssertionError.class, () -> Ship.buildShip("barca", null, origin), "Error: null bearing should fail the assertion.");
+        assertThrows(AssertionError.class, () -> Ship.buildShip("barca", Compass.NORTH, null), "Error: null position should fail the assertion.");
+    }
+
+    @Test
+    @DisplayName("occupies, tooCloseTo e shoot rejeitam (assert) argumentos nulos")
+    void testMethodAssertions() {
+        if (!assertionsEnabled()) return;
+        assertThrows(AssertionError.class, () -> ship.occupies(null), "Error: occupies(null) should fail the assertion.");
+        assertThrows(AssertionError.class, () -> ship.tooCloseTo((IShip) null), "Error: tooCloseTo((IShip) null) should fail the assertion.");
+        assertThrows(AssertionError.class, () -> ship.tooCloseTo((IPosition) null), "Error: tooCloseTo((IPosition) null) should fail the assertion.");
+        assertThrows(AssertionError.class, () -> ship.shoot(null), "Error: shoot(null) should fail the assertion.");
+    }
+
+    @Test
+    @DisplayName("shoot rejeita (assert) um tiro fora do tabuleiro")
+    void testShootOutsideBoardAssertion() {
+        if (!assertionsEnabled()) return;
+        assertThrows(AssertionError.class, () -> ship.shoot(new Position(-1, 0)), "Error: A shot outside the board should fail the assertion.");
+    }
 }
