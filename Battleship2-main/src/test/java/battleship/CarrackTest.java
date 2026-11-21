@@ -22,6 +22,7 @@ import java.util.List;
  * - getLeftMostPos: 2
  * - getRightMostPos: 2
  */
+@DisplayName("Testes da classe Carrack")
 public class CarrackTest {
 
     private Carrack carrack;
@@ -41,6 +42,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 5
      */
     @Test
+    @DisplayName("O construtor cria uma nau com categoria, orientação e 3 posições")
     void testConstructor() {
         assertNotNull(carrack, "Error: Carrack instance should not be null.");
         assertEquals("Nau", carrack.getCategory(), "Error: Carrack's category should be 'Nau'.");
@@ -54,6 +56,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 1
      */
     @Test
+    @DisplayName("getSize devolve 3")
     void testGetSize() {
         assertEquals(3, carrack.getSize(), "Error: The size of the Carrack should be 3.");
     }
@@ -63,6 +66,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 2
      */
     @Test
+    @DisplayName("Virada a NORTE ocupa a origem e as 2 células abaixo")
     void testGetPositions() {
         List<IPosition> positions = carrack.getPositions();
 
@@ -80,6 +84,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 2
      */
     @Test
+    @DisplayName("getTopMostPos devolve a linha de cima")
     void testGetTopMostPos() {
         assertEquals(5, carrack.getTopMostPos(), "Error: The topmost position of the Carrack should be 5.");
     }
@@ -89,6 +94,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 2
      */
     @Test
+    @DisplayName("getBottomMostPos devolve a linha de baixo")
     void testGetBottomMostPos() {
         assertEquals(7, carrack.getBottomMostPos(), "Error: The bottommost position of the Carrack should be 7.");
     }
@@ -98,6 +104,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 2
      */
     @Test
+    @DisplayName("getLeftMostPos devolve a coluna da esquerda")
     void testGetLeftMostPos() {
         assertEquals(5, carrack.getLeftMostPos(), "Error: The leftmost position of the Carrack should be 5.");
     }
@@ -107,6 +114,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 2
      */
     @Test
+    @DisplayName("getRightMostPos devolve a coluna da direita")
     void testGetRightMostPos() {
         assertEquals(5, carrack.getRightMostPos(), "Error: The rightmost position of the Carrack should be 5.");
     }
@@ -116,6 +124,7 @@ public class CarrackTest {
      * Cyclomatic Complexity: 2
      */
     @Test
+    @DisplayName("stillFloating: a nau intacta flutua")
     void testStillFloating1() {
         assertTrue(carrack.stillFloating(), "Error: Carrack should initially be floating.");
     }
@@ -124,6 +133,7 @@ public class CarrackTest {
      * Test for the stillFloating method (some positions hit).
      */
     @Test
+    @DisplayName("stillFloating: a nau com 1 posição atingida ainda flutua")
     void testStillFloating2() {
         // Hit one position
         carrack.getPositions().get(0).shoot();
@@ -134,6 +144,7 @@ public class CarrackTest {
      * Test for the stillFloating method (all positions hit).
      */
     @Test
+    @DisplayName("stillFloating: a nau com todas as posições atingidas afunda")
     void testStillFloating3() {
         carrack.getPositions().forEach(position -> position.shoot());
         assertFalse(carrack.stillFloating(), "Error: Carrack should not be floating when all positions are hit.");
@@ -144,6 +155,7 @@ public class CarrackTest {
      * Expect exception.
      */
     @Test
+    @DisplayName("O construtor lança NullPointerException com argumentos nulos")
     void testConstructorWithNull() {
         assertThrows(NullPointerException.class, () -> new Carrack(null, null),
                 "Error: Expected NullPointerException for null input.");
@@ -153,6 +165,7 @@ public class CarrackTest {
      * Test for positions with EAST direction.
      */
     @Test
+    @DisplayName("Virada a ESTE ocupa a origem e as 2 células à direita")
     void testConstructorDirectionEast() {
         Carrack carrackEast = new Carrack(Compass.EAST, new Position(5, 5));
         List<IPosition> positions = carrackEast.getPositions();
@@ -167,6 +180,7 @@ public class CarrackTest {
      * Test for positions with SOUTH direction.
      */
     @Test
+    @DisplayName("Virada a SUL ocupa a origem e as 2 células abaixo")
     void testConstructorDirectionSouth() {
         Carrack carrackSouth = new Carrack(Compass.SOUTH, new Position(5, 5));
         List<IPosition> positions = carrackSouth.getPositions();
@@ -181,6 +195,7 @@ public class CarrackTest {
      * Test for positions with WEST direction.
      */
     @Test
+    @DisplayName("Virada a OESTE ocupa a origem e as 2 células à direita")
     void testConstructorDirectionWest() {
         Carrack carrackWest = new Carrack(Compass.WEST, new Position(5, 5));
         List<IPosition> positions = carrackWest.getPositions();
@@ -196,6 +211,7 @@ public class CarrackTest {
      * Ensures assertions in the constructor work properly.
      */
     @Test
+    @DisplayName("O construtor lança NullPointerException com orientação ou posição nula")
     void testConstructorWithInvalidInput() {
         assertThrows(NullPointerException.class, () -> new Carrack(null, new Position(5, 5)),
                 "Error: Should throw NullPointerException for null bearing.");

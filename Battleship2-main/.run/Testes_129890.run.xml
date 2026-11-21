@@ -1,0 +1,62 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Testes 129890" type="JUnit" factoryName="JUnit">
+    <module name="BattleshipGamePlayer" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="battleship.Position" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="battleship.Compass" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="battleship.Barge" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="battleship.Caravel" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="battleship.Carrack" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="battleship.Galleon" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="battleship.Ship" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="battleship.MethodNameDemo129890" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="battleship" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="pattern" />
+    <option name="VM_PARAMETERS" value="-ea" />
+    <option name="PARAMETERS" value="" />
+    <patterns>
+      <pattern testClass="battleship.PositionTest" />
+      <pattern testClass="battleship.CompassTest" />
+      <pattern testClass="battleship.BargeTest" />
+      <pattern testClass="battleship.CaravelTest" />
+      <pattern testClass="battleship.CarrackTest" />
+      <pattern testClass="battleship.GalleonTest" />
+      <pattern testClass="battleship.ShipTest" />
+      <pattern testClass="battleship.MethodNameDemo129890Test" />
+      <pattern testClass="battleship.AdditionalPositionTest" />
+      <pattern testClass="battleship.AdditionalBargeTest" />
+      <pattern testClass="battleship.AdditionalCarrackTest" />
+      <pattern testClass="battleship.AdditionalShipTest" />
+    </patterns>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
