@@ -58,16 +58,23 @@ final class BoardMatch {
 
     int shotsRequired() { return Math.min(Game.NUMBER_SHOTS, available(enemy).size()); }
 
+
     void attack(List<IPosition> shots) {
-        require(Phase.PLAYER);
-        Set<IPosition> available = new HashSet<>(available(enemy));
-        if (shots.size() != shotsRequired() || new HashSet<>(shots).size() != shots.size()
-                || !available.containsAll(shots)) {
-            throw new IllegalArgumentException("Seleciona posições diferentes que ainda não foram atingidas.");
-        }
-        enemy.fireShots(padVolley(shots));
-        phase = enemy.getRemainingShips() == 0 ? Phase.WON : Phase.COMPUTER;
+    require(Phase.PLAYER);
+    Set<IPosition> available = new HashSet<>(available(enemy));
+
+    if (shots.size() != shotsRequired()
+            || new HashSet<>(shots).size() != shots.size()
+            || !available.containsAll(shots)) {
+        throw new IllegalArgumentException(
+            "Seleciona posições diferentes que ainda não foram atingidas.");
     }
+
+    enemy.fireShots(padVolley(shots));
+    phase = enemy.getRemainingShips() == 0
+            ? Phase.WON : Phase.COMPUTER;
+}
+
 
     void computerTurn() {
         require(Phase.COMPUTER);

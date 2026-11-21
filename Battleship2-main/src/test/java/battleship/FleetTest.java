@@ -160,8 +160,8 @@ import java.util.ArrayList;
 		 * Cyclomatic Complexity: 2
 		 */
 		@Test
-		void testColisionRisk() throws Exception {
-			var method = Fleet.class.getDeclaredMethod("colisionRisk", IShip.class);
+		void testHasColisionRisk() throws Exception {
+			var method = Fleet.class.getDeclaredMethod("hasColisionRisk", IShip.class);
 			method.setAccessible(true);
 
 			IShip ship1 = new Barge(Compass.NORTH, new Position(1, 1));

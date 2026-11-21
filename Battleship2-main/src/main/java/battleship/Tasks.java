@@ -34,6 +34,8 @@ public class Tasks {
 	private static final String STATUS = "estado";
 	private static final String SIMULA = "simula";
 
+
+	private static final long SIMULATION_DELAY_MS=3000L;
 	/**
 	 * This task also tests the fighting element of a round of three shots
 	 */
@@ -98,7 +100,7 @@ public class Tasks {
                                     }
                                 });
                                 if (!next[0]) break;
-                                Thread.sleep(3000);
+                                Thread.sleep(SIMULATION_DELAY_MS);
                             }
                         }
                         case AJUDA -> menuHelp();
