@@ -175,56 +175,36 @@ public class GalleonTest {
 	}
 
 	@Test
-	@DisplayName("O galeão tem a categoria 'Galeao' e tamanho 5")
-	void testCategoryAndSize() {
+	@DisplayName("Em todas as orientações o galeão tem categoria 'Galeao', 5 posições diferentes e os limites certos")
+	void testShapeAndBoundsAllBearings() {
 		assertEquals("Galeao", galleon.getCategory(), "Error: Galleon category should be 'Galeao'.");
 		assertEquals(5, galleon.getSize(), "Error: Galleon size should be 5.");
-		assertEquals(Compass.NORTH, galleon.getBearing(), "Error: Galleon bearing is incorrect.");
-	}
-
-	@Test
-	@DisplayName("Em todas as orientações o galeão ocupa 5 posições diferentes")
-	void testFivePositionsAllBearings() {
 		for (Compass bearing : Compass.values()) {
 			Galleon g = new Galleon(bearing, new Position(5, 5));
-			assertEquals(5, g.getPositions().size(), "Error: Galleon should have 5 positions for " + bearing.name());
+			assertEquals(bearing, g.getBearing(), "Error: Galleon bearing is incorrect.");
 			assertEquals(5, new java.util.HashSet<>(g.getPositions()).size(),
-					"Error: Galleon positions should all be different for " + bearing.name());
+					"Error: Galleon should have 5 different positions for " + bearing.name());
 		}
-	}
-
-	@Test
-	@DisplayName("Limites do galeão virado a ESTE (a barra estende-se para a esquerda)")
-	void testBoundsEast() {
 		Galleon eastGalleon = new Galleon(Compass.EAST, new Position(5, 5));
-		assertEquals(5, eastGalleon.getTopMostPos(), "Error: The topmost position should be 5.");
-		assertEquals(7, eastGalleon.getBottomMostPos(), "Error: The bottommost position should be 7.");
-		assertEquals(3, eastGalleon.getLeftMostPos(), "Error: The leftmost position should be 3.");
-		assertEquals(5, eastGalleon.getRightMostPos(), "Error: The rightmost position should be 5.");
-	}
-
-	@Test
-	@DisplayName("Limites do galeão virado a SUL e a OESTE")
-	void testBoundsSouthWest() {
 		Galleon southGalleon = new Galleon(Compass.SOUTH, new Position(5, 5));
-		assertEquals(4, southGalleon.getLeftMostPos(), "Error: SOUTH leftmost position should be 4.");
-		assertEquals(6, southGalleon.getRightMostPos(), "Error: SOUTH rightmost position should be 6.");
 		Galleon westGalleon = new Galleon(Compass.WEST, new Position(5, 5));
-		assertEquals(5, westGalleon.getLeftMostPos(), "Error: WEST leftmost position should be 5.");
-		assertEquals(7, westGalleon.getRightMostPos(), "Error: WEST rightmost position should be 7.");
+		assertAll("bounds",
+				() -> assertEquals(5, eastGalleon.getTopMostPos(), "Error: EAST topmost position should be 5."),
+				() -> assertEquals(7, eastGalleon.getBottomMostPos(), "Error: EAST bottommost position should be 7."),
+				() -> assertEquals(3, eastGalleon.getLeftMostPos(), "Error: EAST leftmost position should be 3."),
+				() -> assertEquals(5, eastGalleon.getRightMostPos(), "Error: EAST rightmost position should be 5."),
+				() -> assertEquals(4, southGalleon.getLeftMostPos(), "Error: SOUTH leftmost position should be 4."),
+				() -> assertEquals(6, southGalleon.getRightMostPos(), "Error: SOUTH rightmost position should be 6."),
+				() -> assertEquals(5, westGalleon.getLeftMostPos(), "Error: WEST leftmost position should be 5."),
+				() -> assertEquals(7, westGalleon.getRightMostPos(), "Error: WEST rightmost position should be 7."));
 	}
 
 	@Test
-	@DisplayName("O galeão com algumas posições atingidas continua a flutuar")
-	void testStillFloatingPartial() {
+	@DisplayName("O galeão flutua com algumas posições atingidas e afunda com sink")
+	void testPartialHitsAndSink() {
 		galleon.shoot(new Position(5, 5));
 		galleon.shoot(new Position(7, 6));
 		assertTrue(galleon.stillFloating(), "Error: Galleon should still float with only 2 of 5 positions hit.");
-	}
-
-	@Test
-	@DisplayName("sink atinge todas as posições do galeão")
-	void testSink() {
 		galleon.sink();
 		for (IPosition position : galleon.getPositions())
 			assertTrue(position.isHit(), "Error: Every position should be hit after sink().");

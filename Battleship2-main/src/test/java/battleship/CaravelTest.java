@@ -126,42 +126,14 @@ class CaravelTest {
 	}
 
 	@Test
-	@DisplayName("A caravela tem a categoria 'Caravela' e ocupa 2 posições")
+	@DisplayName("A caravela tem a categoria 'Caravela' e ocupa as 2 posições certas em cada orientação")
 	void categoryAndPositions() {
 		assertEquals("Caravela", cN.getCategory(), "Error: The Caravel category should be 'Caravela'.");
-		assertEquals(2, cN.getPositions().size(), "Error: The Caravel should occupy 2 positions.");
-	}
-
-	@Test
-	@DisplayName("Virada a NORTE ocupa a origem e a célula abaixo")
-	void positionsNorth() {
-		List<IPosition> positions = cN.getPositions();
-		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for NORTH.");
-		assertEquals(new Position(6, 5), positions.get(1), "Error: Second position is incorrect for NORTH.");
-	}
-
-	@Test
-	@DisplayName("Virada a SUL ocupa a origem e a célula abaixo")
-	void positionsSouth() {
-		List<IPosition> positions = cS.getPositions();
-		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for SOUTH.");
-		assertEquals(new Position(6, 5), positions.get(1), "Error: Second position is incorrect for SOUTH.");
-	}
-
-	@Test
-	@DisplayName("Virada a ESTE ocupa a origem e a célula à direita")
-	void positionsEast() {
-		List<IPosition> positions = cE.getPositions();
-		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for EAST.");
-		assertEquals(new Position(5, 6), positions.get(1), "Error: Second position is incorrect for EAST.");
-	}
-
-	@Test
-	@DisplayName("Virada a OESTE ocupa a origem e a célula à direita")
-	void positionsWest() {
-		List<IPosition> positions = cW.getPositions();
-		assertEquals(new Position(5, 5), positions.get(0), "Error: First position is incorrect for WEST.");
-		assertEquals(new Position(5, 6), positions.get(1), "Error: Second position is incorrect for WEST.");
+		assertAll("positions",
+				() -> assertEquals(List.of(new Position(5, 5), new Position(6, 5)), cN.getPositions(), "Error: Positions are incorrect for NORTH."),
+				() -> assertEquals(List.of(new Position(5, 5), new Position(6, 5)), cS.getPositions(), "Error: Positions are incorrect for SOUTH."),
+				() -> assertEquals(List.of(new Position(5, 5), new Position(5, 6)), cE.getPositions(), "Error: Positions are incorrect for EAST."),
+				() -> assertEquals(List.of(new Position(5, 5), new Position(5, 6)), cW.getPositions(), "Error: Positions are incorrect for WEST."));
 	}
 
 	@Test
