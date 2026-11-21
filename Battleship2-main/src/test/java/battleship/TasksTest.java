@@ -1,18 +1,13 @@
 package battleship;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import java.util.Scanner;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
-/**
- * TasksTest
- *
- * @author Your Name
- * Date: 07/01/2026
- * Time: 00:53
- */
 class TasksTest {
 
     @Test
@@ -48,43 +43,90 @@ class TasksTest {
         assertThrows(IllegalArgumentException.class, () -> Tasks.parseShots("A1 B2 C3 D4"));
     }
 
-	@BeforeEach
-	void setUp() {
-	}
+	  @Test
+    @DisplayName("Read numeric row and column")
+    void readPosition() {
+        Position position = Tasks.readPosition(
+                new Scanner("3 5"));
 
-	@AfterEach
-	void tearDown() {
-	}
+        assertEquals(3, position.getRow());
+        assertEquals(5, position.getColumn());
+    }
 
-	@Test
-	void taskA() {
-	}
+    @Test
+    @DisplayName("Read valid ship from scanner")
+    void readShip() {
+        Ship ship = Tasks.readShip(
+                new Scanner("barca 2 3 n"));
 
-	@Test
-	void taskB() {
-	}
+        assertNotNull(ship);
+        assertInstanceOf(Barge.class, ship);
+        assertEquals(2, ship.getPosition().getRow());
+        assertEquals(3, ship.getPosition().getColumn());
+        assertEquals(Compass.NORTH, ship.getBearing());
+    }
 
-	@Test
-	void taskC() {
-	}
+    @Test
+    @DisplayName("Unknown ship category returns null")
+    void taskA() {
+        Ship ship = Tasks.readShip(
+                new Scanner("unknown 2 3 n"));
 
-	@Test
-	void taskD() {
-	}
+        assertNull(ship);
+    }
 
-	@Test
-	void buildFleet() {
-	}
+    @Test
+    @DisplayName("Read compact and spaced classic positions")
+    void taskB() {
+        IPosition compact = Tasks.readClassicPosition(
+                new Scanner("A3"));
 
-	@Test
-	void readShip() {
-	}
+        IPosition spaced = Tasks.readClassicPosition(
+                new Scanner("a 3"));
 
-	@Test
-	void readPosition() {
-	}
+        assertEquals(compact, spaced);
+        assertEquals(0, compact.getRow());
+        assertEquals(2, compact.getColumn());
+    }
 
-	@Test
-	void firingRound() {
-	}
+    @Test
+    @DisplayName("Reject invalid classic position formats")
+    void taskC() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Tasks.readClassicPosition(
+                        new Scanner("")));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> Tasks.readClassicPosition(
+                        new Scanner("invalid")));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> Tasks.readClassicPosition(
+                        new Scanner("123")));
+    }
+
+    @Test
+    @DisplayName("Menu help prints available commands")
+    void taskD() {
+        PrintStream original = System.out;
+        ByteArrayOutputStream output =
+                new ByteArrayOutputStream();
+
+        try {
+            System.setOut(new PrintStream(output));
+
+            Tasks.menuHelp();
+
+            String result = output.toString();
+
+            assertTrue(result.contains("ajuda"));
+            assertTrue(result.contains("gerafrota"));
+            assertTrue(result.contains("lefrota"));
+            assertTrue(result.contains("rajada"));
+            assertTrue(result.contains("desisto"));
+            assertTrue(result.contains("simula"));
+        } finally {
+            System.setOut(original);
+        }
+    }
 }
