@@ -183,4 +183,35 @@ class BoardMatchTest {
                 3,
                 BoardMatch.padVolley(List.of(first)).size());
     }
+    
+@Test
+@DisplayName("Loading a fleet updates the player fleet")
+void testLoadFleet() {
+    BoardMatch match = new BoardMatch();
+    Fleet fleet = new Fleet();
+
+    match.loadFleet(fleet);
+
+    assertSame(fleet, match.player().getMyFleet());
+    assertSame(fleet, match.placement().fleet());
+    assertEquals(BoardMatch.Phase.PLACEMENT, match.phase());
+}
+
+@Test
+@DisplayName("Receiving valid shots starts the match")
+void testReceiveValidShots() {
+    BoardMatch match = new BoardMatch(new Random(129880));
+
+    match.randomize();
+
+    match.receiveShots(List.of(
+            new Position(0, 0),
+            new Position(0, 1),
+            new Position(0, 2)
+    ));
+
+    assertEquals(1, match.player().getAlienMoves().size());
+    assertEquals(BoardMatch.Phase.PLAYER, match.phase());
+}
+
 }
