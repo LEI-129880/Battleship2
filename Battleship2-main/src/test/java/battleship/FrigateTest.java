@@ -8,10 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for the Frigate class.
- * Author: ${user.name}
- * Date: ${current_date}
- * Time: ${current_time}
- * Cyclomatic Complexity for each method:
+ for each method:
  * - Constructor: 5
  * - getSize: 1
  * - stillFloating: 2
