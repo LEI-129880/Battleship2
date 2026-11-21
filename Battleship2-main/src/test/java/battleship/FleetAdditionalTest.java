@@ -96,4 +96,52 @@ class FleetAdditionalTest {
 
         assertDoesNotThrow(fleet::printFloatingShips);
     }
+    
+    @Test
+    @DisplayName("Fleet rejects ships when capacity is exceeded")
+    void testFleetCapacityExceeded() {
+        Fleet fleet = new Fleet();
+
+        for (int i = 0; i <= Fleet.FLEET_SIZE; i++) {
+            fleet.getShips().add(
+                new Barge(
+                    Compass.NORTH,
+                    new Position(0, 0)
+                )
+            );
+        }
+
+        assertEquals(12, fleet.getShips().size());
+
+        IShip extra = new Barge(
+            Compass.NORTH,
+            new Position(5, 5)
+        );
+
+        assertFalse(fleet.addShip(extra));
+        assertEquals(12, fleet.getShips().size());
+    }
+
+    @Test
+    @DisplayName("Fleet rejects adjacent ships without overlap")
+    void testAdjacentShipsRejected() {
+        Fleet fleet = new Fleet();
+
+        IShip first = new Barge(
+            Compass.NORTH,
+            new Position(1, 1)
+        );
+
+        IShip adjacent = new Barge(
+            Compass.NORTH,
+            new Position(1, 2)
+        );
+
+        assertTrue(fleet.addShip(first));
+        assertFalse(fleet.addShip(adjacent));
+
+        assertEquals(1, fleet.getShips().size());
+        assertSame(first, fleet.getShips().get(0));
+    }
+
 }
