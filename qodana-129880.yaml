@@ -5,6 +5,9 @@ linter: jetbrains/qodana-jvm-community:2026.2
 
 projectJDK: "21"
 
+rootJavaProjects:
+  - "./Battleship2-main/pom.xml"
+
 profile:
   base:
     name: empty
